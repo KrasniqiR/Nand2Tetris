@@ -17,4 +17,16 @@ CHIP PC {
 
     PARTS:
     // Put your code here:
+
+    //Default and incrementor outputs.
+    Register(in=in, load=load, out=rOut);
+
+    Inc16(in=pOut, out=incRout);
+    // Register(in=incRout, load=inc, out=rIncRout);
+    Register(in=false, load=reset, out=rReset);
+    
+    //Apply selectors
+    Mux16(a=rOut, b=incRout, sel=inc, out=incOrLoad);
+    Mux16(a=incOrLoad, b=rReset, sel=reset,out=pOut, out=out);
+
 }

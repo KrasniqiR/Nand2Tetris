@@ -19,18 +19,17 @@ CHIP PC {
     // Put your code here:
 
     //Default and incrementor outputs.
-    Register(in=in, load=load, out=rOut);
-    Register(in=pOut, load=true, out=pOutDefault);
-
     DFF(in=load, out=dLoad);
-    
-    Inc16(in=pOut, out=incRout);
-    Register(in=incRout, load=inc, out=rIncRout);
-    Register(in=false, load=reset, out=rReset);
-    
-    //Apply selectors
-    Mux16(a=pOutDefault, b=rIncRout, sel=inc, out=defaultOrInc);
-    Mux16(a=defaultOrInc, b=rOut, sel=dLoad, out=incOrLoad);
-    Mux16(a=incOrLoad, b=rReset, sel=reset,out=pOut, out=out);
+    DFF(in=inc, out=dInc);
+    DFF(in=reset, out=dReset);
 
+    Register(in=in, load=load, out=outDefault);
+
+    Register(in=outLoop, load=true, out=outLoopInc);
+    Inc16(in=outLoopInc, out=outInc);
+
+    // If else in reverse sequential order when using Mux.
+    Mux16(a=outIncLoad, b=false, sel=dReset, out=outLoop, out=out);
+    Mux16(a=outIncD, b=outDefault, sel=dLoad, out=outIncLoad);
+    Mux16(a=outDefault, b=outInc, sel=dInc, out=outIncD);
 }

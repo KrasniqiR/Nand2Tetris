@@ -18,13 +18,15 @@ CHIP PC {
     PARTS:
     // Put your code here:
 
-    //Default and incrementor outputs.
+    // Deferred selectors (T-1)
     DFF(in=load, out=dLoad);
     DFF(in=inc, out=dInc);
     DFF(in=reset, out=dReset);
 
+    // Default output 
     Register(in=in, load=load, out=outDefault);
 
+    //Feed out to Inc16, using a register to prevent combinatorial circular error.
     Register(in=outLoop, load=true, out=outLoopInc);
     Inc16(in=outLoopInc, out=outInc);
 

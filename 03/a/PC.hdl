@@ -20,13 +20,17 @@ CHIP PC {
 
     //Default and incrementor outputs.
     Register(in=in, load=load, out=rOut);
+    Register(in=pOut, load=true, out=pOutDefault);
 
+    DFF(in=load, out=dLoad);
+    
     Inc16(in=pOut, out=incRout);
-    // Register(in=incRout, load=inc, out=rIncRout);
+    Register(in=incRout, load=inc, out=rIncRout);
     Register(in=false, load=reset, out=rReset);
     
     //Apply selectors
-    Mux16(a=rOut, b=incRout, sel=inc, out=incOrLoad);
+    Mux16(a=pOutDefault, b=rIncRout, sel=inc, out=defaultOrInc);
+    Mux16(a=defaultOrInc, b=rOut, sel=dLoad, out=incOrLoad);
     Mux16(a=incOrLoad, b=rReset, sel=reset,out=pOut, out=out);
 
 }

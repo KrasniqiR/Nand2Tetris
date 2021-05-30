@@ -15,5 +15,23 @@ CHIP RAM8 {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+    // Put your code here:ß
+    //Line up an array of 8 registers
+
+    // Load bit
+    DFF(in=load, out=dLoad);
+
+    // Only set load bit on the received memory address    
+    DMux8Way(in=load, sel=address, a=dLoad1, b=dLoad2, c=dLoad3, d=dLoad4, e=dLoad5, f=dLoad6, g=dLoad7, h=dLoad8);
+
+    Register(in=in, load=dLoad1, out=r1);
+    Register(in=in, load=dLoad2, out=r2);
+    Register(in=in, load=dLoad3, out=r3);
+    Register(in=in, load=dLoad4, out=r4);
+    Register(in=in, load=dLoad5, out=r5);
+    Register(in=in, load=dLoad6, out=r6);
+    Register(in=in, load=dLoad7, out=r7);
+    Register(in=in, load=dLoad8, out=r8);
+
+    Mux8Way16(a=r1, b=r2, c=r3, d=r4, e=r5, f=r6, g=r7, h=r8, sel=address, out=out);
 }

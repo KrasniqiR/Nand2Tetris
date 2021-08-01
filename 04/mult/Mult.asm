@@ -11,21 +11,20 @@
 
 // Put your code here.
 
+//Set output to 0
     @R2
     M=0
 
+// If R0=0 or R1=0, run zero branch
     @R0
     D=M
     @ZERO
-    D;JEQ
-    
+    D;JEQ    
     @R1
     D=M
     @ZERO
     D;JEQ
 
-
-    D=0
     (LOOP)
     @R0
     D=M
@@ -37,9 +36,6 @@
     D=M
     @LOOP
     D;JGT
-
-    @R2
-    M=D
     @END
     0;JMP
 

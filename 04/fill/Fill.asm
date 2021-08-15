@@ -17,6 +17,17 @@
 // 2. If input not pressed, white screen
 // 3. Else draw pixels
 
+@SCREEN
+D=A
+@PixelAddress
+//Load Screen address into R1
+M=D
+@8192
+D=A
+@PixelAddress
+//Add screen addresses
+M=M+D
+
 //Listen for keyboard
 (LOOP)
 @KBD
@@ -26,19 +37,8 @@ D=A
 D;JEQ
 
 (PAINT)
-@SCREEN
-D=A
-@R1
-//Load Screen address into R1
-M=D
-@8192
-D=A
-@PixelAddress
-//Add screen addresses
-M=M+D
 
-
-@65535
+@32767
 D=A
 
 @PixelAddress

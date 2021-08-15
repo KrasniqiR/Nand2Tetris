@@ -17,6 +17,17 @@
 // 2. If input not pressed, white screen
 // 3. Else draw pixels
 
+// Full Solution
+// 1. Listen for keyboard
+// 2. Paint screen
+// 3. Listen for not pressed
+// 4. Clear screen
+// 5. Run program again
+
+//Listen for keyboard
+(LOOP)
+
+
 @SCREEN
 D=A
 @PixelAddress
@@ -28,16 +39,17 @@ D=A
 //Add screen addresses
 M=M+D
 
-//Listen for keyboard
-(LOOP)
 @KBD
-D=A
-@LOOP
-//If not pressed, restart loop
+D=M
+
+//If pressed, paint
+@PAINT
+D;JGT
+//If not pressed, clear
+@CLEAR
 D;JEQ
 
 (PAINT)
-
 @32767
 D=A
 
@@ -53,5 +65,26 @@ D=D-A
 
 @PAINT
 D;JGE
+
+@LOOP
+0;JMP
+
+(CLEAR)
+@0
+D=A
+
+@PixelAddress
+A=M
+M=D
+
+@PixelAddress
+M=M-1
+
+@SCREEN
+D=D-A
+
+@CLEAR
+D;JGE
+
 @LOOP
 0;JMP

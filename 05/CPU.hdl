@@ -40,4 +40,14 @@ CHIP CPU {
 
     PARTS:
     // Put your code here:
+    Mux16(a=Else, b=instruction[1..15], sel=instruction[0], out=inA);
+    Register(in=inA, load=instruction[0], out=outA);
+
+    // Follow language spec here
+    ALU(x=, y=, zx=, nx=, zy=, ny=, f=, no=, out=, zr=, ng=);
+
+    //TODO: Configure this jump bit
+    PC(in=outA, load=, inc=, reset=reset, out=);
+
+
 }

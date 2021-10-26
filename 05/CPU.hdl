@@ -40,8 +40,19 @@ CHIP CPU {
 
     PARTS:
     // Put your code here:
+    Not(in=instruction[0], loadA);
+
+    Register(in=instruction[1..15], load=loadA, out=A);
+    Register(in=inD, load=loadD, out=D);
+    Mux16(a=A, b=inM, sel=instruction[3]); 
+
+    And(in=instruction[10], out=writeA);
+    And(in=instruction[11], out=writeD);
+    And(in=instruction[12], out=writeM);
+
+
     Mux16(a=Else, b=instruction[1..15], sel=instruction[0], out=inA);
-    Register(in=inA, load=instruction[0], out=outA);
+
 
     // Follow language spec here
     ALU(x=, y=, zx=, nx=, zy=, ny=, f=, no=, out=, zr=, ng=);

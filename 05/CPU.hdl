@@ -39,7 +39,6 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    // Put your code here:
     // Compute whether to write Alu output to destination registers
     And(a=instruction[12], b=instruction[0], out=writeM);
     And(a=instruction[11], b=instruction[0], out=writeD);
@@ -50,13 +49,13 @@ CHIP CPU {
     Mux16(a=instruction, b=outAlu, sel=writeA, out=AValue);
     
     // A and D registers
-    Register(in=AValue, load=writeA, out=A);
+    Register(in=AValue, load=writeA, out=A, out=addressM);
     Register(in=outAlu, load=writeD, out=D);
 
     // Decide whether A or M to be computed
     Mux16(a=A, b=inM, sel=instruction[3], out=compY);
     // Alu computation    
-    ALU(x=D, y=compY, zx=instruction[4], nx=instruction[5], zy=instruction[6], ny=instruction[7], f=instruction[8], no=instruction[9], out=outAlu, zr=zr, ng=ng);
+    ALU(x=D, y=compY, zx=instruction[4], nx=instruction[5], zy=instruction[6], ny=instruction[7], f=instruction[8], no=instruction[9], out=outAlu, out=outM, zr=zr, ng=ng);
 
     // Compute outAlu > 0
     Or(a=zr, b=ng, out=notGt)

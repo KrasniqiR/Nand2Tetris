@@ -45,12 +45,12 @@ CHIP CPU {
     And(a=instruction[10], b=instruction[0], out=writeCompA);
 
      // Compute which value to supply as input to A register
-    And(a=instruction[0], b=writeCompA, out=writeA);
+    Or(a=instruction[0], b=writeCompA, out=writeA);
     Mux16(a=instruction, b=outAlu, sel=writeA, out=AValue);
     
     // A and D registers
-    Register(in=AValue, load=writeA, out=A, out=addressM);
-    Register(in=outAlu, load=writeD, out=D);
+    ARegister(in=AValue, load=writeA, out=A, out[0..14]=addressM);
+    DRegister(in=outAlu, load=writeD, out=D);
 
     // Decide whether A or M to be computed
     Mux16(a=A, b=inM, sel=instruction[3], out=compY);
@@ -58,11 +58,11 @@ CHIP CPU {
     ALU(x=D, y=compY, zx=instruction[4], nx=instruction[5], zy=instruction[6], ny=instruction[7], f=instruction[8], no=instruction[9], out=outAlu, out=outM, zr=zr, ng=ng);
 
     // Compute outAlu > 0
-    Or(a=zr, b=ng, out=notGt)
+    Or(a=zr, b=ng, out=notGt);
     Not(in=notGt, out=gt);
 
     // Evaluate Jump bits
-    DMux8Way(in=true, sel[0]=in[13], sel[1]=in[14], sel[2]=in[15], a=outJA, b=outJB, c=outJC,  d=outJD, e=outJE, f=outJF, g=outJG, h=outJH);
+    DMux8Way(in=true, sel[0]=instruction[13], sel[1]=instruction[14], sel[2]=instruction[15], a=outJA, b=outJB, c=outJC,  d=outJD, e=outJE, f=outJF, g=outJG, h=outJH);
     // Evaluate comp jump results
     DMux8Way(in=true, sel[0]=ng, sel[1]=zr, sel[2]=gt, a=outDMuxA, b=outDMuxB, c=outDMuxC,  d=outDMuxD, e=outDMuxE, f=outDMuxF, g=outDMuxG, h=outDMuxH);
 
@@ -76,6 +76,6 @@ CHIP CPU {
     And(a=outDMuxH, b=outJH, out=outJMuxH);
 
     // Jump if we have a match
-    Or8Way(in[0]=false, in[1]=outJMuxB, in[2]=outJMuxC, in[3]=outJMuxD, in[4]=outJMuxE, in[5]=outJMuxF, in[6]=outJMuxG, in[7]=outJMuxH out=jmp);
-    PC(in=A, load=jmp, inc=true, reset=reset, out=pc);
+    Or8Way(in[0]=false, in[1]=outJMuxB, in[2]=outJMuxC, in[3]=outJMuxD, in[4]=outJMuxE, in[5]=outJMuxF, in[6]=outJMuxG, in[7]=outJMuxH, out=jmp);
+    PC(in=A, load=jmp, inc=true, reset=reset, out[0..14]=pc);
 }    

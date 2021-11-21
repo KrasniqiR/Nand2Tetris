@@ -40,31 +40,49 @@ CHIP CPU {
 
     PARTS:
     // Compute whether to write Alu output to destination registers
-    And(a=instruction[12], b=instruction[0], out=writeM);
-    And(a=instruction[11], b=instruction[0], out=writeD);
-    And(a=instruction[10], b=instruction[0], out=writeCompA);
+    And(a=instruction[3], b=instruction[15], out=writeM);
+    And(a=instruction[4], b=instruction[15], out=writeD);
+    And(a=instruction[5], b=instruction[15], out=writeCompA);
+    Not(in=instruction[15], out=aInstruction);
 
      // Compute which value to supply as input to A register
-    Or(a=instruction[0], b=writeCompA, out=writeA);
-    Mux16(a=instruction, b=outAlu, sel=writeA, out=AValue);
+    Or(a=aInstruction, b=writeCompA, out=writeA);
+    Mux16(a=instruction, b=outAlu, sel=instruction[15], out=AValue);
     
     // A and D registers
     ARegister(in=AValue, load=writeA, out=A, out[0..14]=addressM);
     DRegister(in=outAlu, load=writeD, out=D);
 
     // Decide whether A or M to be computed
-    Mux16(a=A, b=inM, sel=instruction[3], out=compY);
+    Mux16(a=A, b=inM, sel=instruction[12], out=compY);
     // Alu computation    
-    ALU(x=D, y=compY, zx=instruction[4], nx=instruction[5], zy=instruction[6], ny=instruction[7], f=instruction[8], no=instruction[9], out=outAlu, out=outM, zr=zr, ng=ng);
+    ALU(x=D, y=compY, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=outAlu, out=outM, zr=zr, ng=ng);
 
     // Compute outAlu > 0
     Or(a=zr, b=ng, out=notGt);
     Not(in=notGt, out=gt);
 
+    And(a=instruction[0], b=true, out=in0);
+    And(a=instruction[1], b=true, out=in1);
+    And(a=instruction[2], b=true, out=in2);
+    And(a=instruction[3], b=true, out=in3);
+    And(a=instruction[4], b=true, out=in4);
+    And(a=instruction[5], b=true, out=in5);
+    And(a=instruction[6], b=true, out=in6);
+    And(a=instruction[7], b=true, out=in7);
+    And(a=instruction[8], b=true, out=in8);
+    And(a=instruction[9], b=true, out=in9);
+    And(a=instruction[10], b=true, out=in10);
+    And(a=instruction[11], b=true, out=in11);
+    And(a=instruction[12], b=true, out=in12);
+    And(a=instruction[13], b=true, out=in13);
+    And(a=instruction[14], b=true, out=in14);
+    And(a=instruction[15], b=true, out=in15);
+
     // Evaluate Jump bits
-    DMux8Way(in=true, sel[0]=instruction[13], sel[1]=instruction[14], sel[2]=instruction[15], a=outJA, b=outJB, c=outJC,  d=outJD, e=outJE, f=outJF, g=outJG, h=outJH);
+    DMux8Way(in=true, sel[2]=instruction[2], sel[1]=instruction[1], sel[0]=instruction[0], a=outJA, b=outJB, c=outJC,  d=outJD, e=outJE, f=outJF, g=outJG, h=outJH);
     // Evaluate comp jump results
-    DMux8Way(in=true, sel[0]=ng, sel[1]=zr, sel[2]=gt, a=outDMuxA, b=outDMuxB, c=outDMuxC,  d=outDMuxD, e=outDMuxE, f=outDMuxF, g=outDMuxG, h=outDMuxH);
+    DMux8Way(in=true, sel[0]=gt, sel[1]=zr, sel[2]=ng, a=outDMuxA, b=outDMuxB, c=outDMuxC,  d=outDMuxD, e=outDMuxE, f=outDMuxF, g=outDMuxG, h=outDMuxH);
 
     // Marry jump inputs and jump results
     And(a=outDMuxB, b=outJB, out=outJMuxB);
@@ -77,5 +95,6 @@ CHIP CPU {
 
     // Jump if we have a match
     Or8Way(in[0]=false, in[1]=outJMuxB, in[2]=outJMuxC, in[3]=outJMuxD, in[4]=outJMuxE, in[5]=outJMuxF, in[6]=outJMuxG, in[7]=outJMuxH, out=jmp);
-    PC(in=A, load=jmp, inc=true, reset=reset, out[0..14]=pc);
+    And(a=jmp, b=instruction[15], out=loadPC); // Only load if not A instruction
+    PC(in=A, load=loadPC, inc=true, reset=reset, out[0..14]=pc);
 }    

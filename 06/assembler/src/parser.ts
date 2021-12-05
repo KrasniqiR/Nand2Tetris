@@ -1,3 +1,5 @@
+import { aInstruction,label,jmp,comp } from "./patterns.ts";
+
 type CommandType = 
 /** A instruction (set M) */
 'A' | 
@@ -14,19 +16,31 @@ type ParseResult = {
     commandType: 'C',
     comp?: CompMnemonic,
     dest?: DestMnemonic,
-    error?: Error;
-} | {commandType: 'A' | 'L', symbol: string, error: Error};
+} | {commandType: 'A' | 'L', symbol: string} | {error: Error};
 
 function parse (instruction: string) : ParseResult {
-    const commandType = getCommandType(instruction);
+    try {
+        const commandType = getCommandType(instruction);
 
-    
+        switch (commandType) {
+            case 'A':
+                return {commandType, symbol: getA(instruction)};
+            case 'L':
+                return {commandType, symbol: getS(instruction)};
+            case 'C':
+                return  {commandType, comp: getComp(instruction), dest: getJump(instruction)};
+                
+        }
 
-    return {};
+    } catch (error) {
+        return {error}
+    }
 }
 
 function getCommandType (command: string) : CommandType {
-    const trimmedCommand = command.trim();
+    // Ignore all whitespace
+    const trimmedCommand = command.replaceAll(/\s*/, "");
+    
     switch (true) {
         case (aInstruction.test(trimmedCommand)):
             return 'A';
@@ -35,13 +49,23 @@ function getCommandType (command: string) : CommandType {
         case (jmp.test(trimmedCommand) || comp.test(trimmedCommand) ):
             return 'C';
     }
-    throw new Error(`Invalid command ${command}`)
+
+    throw new Error(`Invalid command ${command}`);
 }
 
-function getComp(command: string): string {
+function getComp(command: string): DestMnemonic {
+    return 'ADD'
+}
+
+function getJump(command: string): DestMnemonic {
+    return 'ADD'
 
 }
 
-function getJump(command: string): string {
+function getA(command: string): string {
+    return ''
+}
 
+function getS(command: string): string {
+    return ''
 }

@@ -11,23 +11,31 @@ type DestMnemonic = 'ADD';
 type JumpMnemonic = 'ADD';
 
 type ParseResult = {
-    commandType: CommandType,
-    symbol: string,
+    commandType: 'C',
     comp?: CompMnemonic,
     dest?: DestMnemonic,
-    jump?: JumpMnemonic
     error?: Error;
-}
+} | {commandType: 'A' | 'L', symbol: string, error: Error};
 
 function parse (instruction: string) : ParseResult {
+    const commandType = getCommandType(instruction);
+
     
+
+    return {};
 }
 
 function getCommandType (command: string) : CommandType {
-    switch (command) {
-        
+    const trimmedCommand = command.trim();
+    switch (true) {
+        case (aInstruction.test(trimmedCommand)):
+            return 'A';
+        case (label.test(trimmedCommand)):
+            return 'L';
+        case (jmp.test(trimmedCommand) || comp.test(trimmedCommand) ):
+            return 'C';
     }
-    return;
+    throw new Error(`Invalid command ${command}`)
 }
 
 function getComp(command: string): string {

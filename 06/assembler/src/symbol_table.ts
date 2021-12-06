@@ -1,4 +1,4 @@
-const Symbols = {
+export const SymbolTable = {
     SP: 0,
     LCL: 1,
     ARG: 2,
@@ -22,4 +22,4 @@ const Symbols = {
     R15: 15,
     SCREEN: 16384,
     KBD: 24576
-} as const;
+};

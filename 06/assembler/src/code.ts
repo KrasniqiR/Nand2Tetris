@@ -1,3 +1,7 @@
+export function code(instruction: Pick<ParseResult, 'comp' | 'dest' |'jump'>): string {
+     return ''
+}
+
 function dest(mnemonic: string): number {
     
 }

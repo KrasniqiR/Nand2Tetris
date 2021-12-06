@@ -1,4 +1,4 @@
-import { aInstruction,label,jmp,comp } from "./patterns.ts";
+import { aInstruction, label, jmp, comp } from "./patterns.ts";
 
 type CommandType = 
 /** A instruction (set M) */
@@ -8,17 +8,47 @@ type CommandType =
 /** L instruction (Assign symbol) */
 'L';
 
-type CompMnemonic = 'ADD';
-type DestMnemonic = 'ADD';
-type JumpMnemonic = 'ADD';
+type CompMemoryReferences = 'A' | 'M' | 'D'
+type PairOperators = '+' | '-' | '|' | '&' | '!';
+type SingularOperators = '-' | '!';
 
-type ParseResult = {
-    commandType: 'C',
-    comp?: CompMnemonic,
-    dest?: DestMnemonic,
-} | {commandType: 'A' | 'L', symbol: string} | {error: Error};
+type CompValues = {
+    dest: DestValues,
+} &
+( 
+    {
+        value1: CompMemoryReferences
+        operator: SingularOperators
+    } 
+    | {
+        value1: CompMemoryReferences
+        value2: CompMemoryReferences
+        operator: PairOperators
+    }
+);
 
-function parse (instruction: string) : ParseResult {
+
+const JUMP_MNEMONICS = ['null', 'JGT', 'JEQ', 'JGE', 'JLT', 'JNE', 'JLE', 'JMP'] as const;
+type JumpMneominc = typeof JUMP_MNEMONICS[number];
+type JumpValues = [number, JumpMneominc];
+
+type DestValues = `null` | `${'A' | ''}${'M' | ''}${'D'|''}`
+
+type ParseResult = ({
+    commandType: 'C',    
+} & ( {
+    comp: CompValues,
+    dest: DestValues
+    
+} |  {
+    jump: JumpValues,
+    
+})
+)
+| {commandType: 'A' | 'L', symbol: string} |
+ {error: Error};
+
+export function parse (instruction: string) : ParseResult {
     try {
         const commandType = getCommandType(instruction);
 
@@ -26,10 +56,9 @@ function parse (instruction: string) : ParseResult {
             case 'A':
                 return {commandType, symbol: getA(instruction)};
             case 'L':
-                return {commandType, symbol: getS(instruction)};
+                return {commandType, symbol: getL(instruction)};
             case 'C':
-                return  {commandType, comp: getComp(instruction), dest: getJump(instruction)};
-                
+                return  {commandType, comp: getComp(instruction), dest: getDest(instruction), jump: getJump(instruction)};    
         }
 
     } catch (error) {
@@ -53,19 +82,27 @@ function getCommandType (command: string) : CommandType {
     throw new Error(`Invalid command ${command}`);
 }
 
-function getComp(command: string): DestMnemonic {
+function getComp(instruction: string): DestValues {
+    const compValues = instruction.match(comp);
+    return 
+}
+
+function getJump(instruction: string): JumpValues {
+    const jmpValues = instruction.match(jmp);
     return 'ADD'
 }
 
-function getJump(command: string): DestMnemonic {
-    return 'ADD'
-
+function getDest(instruction: string): JumpValues {
+    const jmpValues = instruction.match(jmp);
+    return 'A'
 }
 
-function getA(command: string): string {
+function getA(instruction: string): string {
+    const aValue = instruction.match(aInstruction);
     return ''
 }
 
-function getS(command: string): string {
+function getL(instruction: string): string {
+    const labelValue = instruction.match(label);
     return ''
 }

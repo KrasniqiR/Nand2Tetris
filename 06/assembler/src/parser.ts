@@ -1,32 +1,16 @@
-import { aInstruction, comp, jmp, label } from "./patterns.ts";
+import { aInstruction, cInstruction, label } from "./patterns.ts";
 
 type CommandType =
   /** A instruction (set M) */
   | "A"
-  | /** Comp instruction */
-  "C"
-  | /** L instruction (Assign symbol) */
-  "L";
+  | /** Comp instruction */ "C"
+  | /** L instruction (Assign symbol) */ "L";
 
 type CompMemoryReferences = "A" | "M" | "D";
 type PairOperators = "+" | "-" | "|" | "&" | "!";
 type SingularOperators = "-" | "!";
 
-type CompValues =
-  & {
-    dest: DestValues;
-  }
-  & (
-    | {
-      value1: CompMemoryReferences;
-      operator?: SingularOperators;
-    }
-    | {
-      value1: CompMemoryReferences;
-      value2: CompMemoryReferences;
-      operator: PairOperators;
-    }
-  );
+type CompValues = string;
 
 const JUMP_MNEMONICS = [
   "null",
@@ -42,38 +26,52 @@ const JUMP_MNEMONICS = [
 type JumpMnemonic = typeof JUMP_MNEMONICS[number];
 type JumpValues = [number | string, JumpMnemonic];
 
-type DestValues = `null` | `${"A" | ""}${"M" | ""}${"D" | ""}`;
+const DEST_VALUES = [
+  "null",
+  "A",
+  "M",
+  "D",
+  "MD",
+  "AD",
+  "AM",
+  "AMD",
+] as const;
+
+type DestValues = typeof DEST_VALUES[number];
+
+type CValues = {
+  comp?: string;
+  dest?: string;
+  jump?: string;
+};
 
 type ParseResult =
   | (
     & {
       commandType: "C";
     }
-    & ({
-      comp: CompValues;
-      dest: DestValues;
-    } | {
-      jump: JumpValues;
-    })
+    & (
+      CValues
+    )
   )
   | { commandType: "A" | "L"; symbol: string }
   | { error: Error };
 
 export function parse(instruction: string): ParseResult {
+  // Ignore all whitespace
+  const trimmedInstruction = instruction.replaceAll(/\s*/, "");
   try {
-    const commandType = getCommandType(instruction);
+    const commandType = getCommandType(trimmedInstruction);
 
     switch (commandType) {
       case "A":
-        return { commandType, symbol: getA(instruction) };
+        return { commandType, symbol: getA(trimmedInstruction) };
       case "L":
-        return { commandType, symbol: getL(instruction) };
+        return { commandType, symbol: getL(trimmedInstruction) };
       case "C":
         return {
           commandType,
-          comp: getComp(instruction),
-          dest: getDest(instruction),
-          jump: getJump(instruction),
+          ...getC(trimmedInstruction),
         };
     }
   } catch (error) {
@@ -82,49 +80,50 @@ export function parse(instruction: string): ParseResult {
 }
 
 function getCommandType(command: string): CommandType {
-  // Ignore all whitespace
-  const trimmedCommand = command.replaceAll(/\s*/, "");
-
   switch (true) {
-    case (aInstruction.test(trimmedCommand)):
+    case (aInstruction.test(command)):
       return "A";
-    case (label.test(trimmedCommand)):
+    case (label.test(command)):
       return "L";
-    case (jmp.test(trimmedCommand) || comp.test(trimmedCommand)):
+    case (cInstruction.test(command)):
       return "C";
   }
 
   throw new Error(`Invalid command ${command}`);
 }
 
-function getComp(instruction: string): DestValues {
-  const compValues = instruction.match(comp);
+function getC(instruction: string): CValues {
+  const compValues = instruction.match(cInstruction);
 
-  if (!compValues) throw new Error("Invalid comp instruction");
+  if (!compValues?.groups) throw new Error("Invalid C instruction");
 
-  if (compValues.length === 1) {
-    return { value1: compValues[0] };
+  const { comp, dest, jump } = compValues.groups;
 
-  } else if (compValues.length === 2) {
-    return;
-  }
-  return;
-}
-
-function getJump(instruction: string): JumpValues {
-  const jValues = instruction.match(jmp);
-  if (!jValues) throw new Error("Error parsing jump instruction");
-  if (jValues?.length > 2 || jValues?.length == 0) {
-    throw new Error("Error parsing jump instruction");
+  if (jump && !JUMP_MNEMONICS.includes(jump as JumpMnemonic)) {
+    throw new Error("Invalid jump instruction");
   }
 
-  return jValues.slice(2);
+  if (dest && !DEST_VALUES.includes(dest as DestValues)) {
+    throw new Error("Invalid dest instruction");
+  }
+
+  return { comp, dest, jump };
 }
 
-function getDest(instruction: string): JumpValues {
-  const jmpValues = instruction.match(jmp);
-  return "A";
-}
+// function getJump(instruction: string): JumpValues {
+//   const jValues = instruction.match(jmp);
+//   if (!jValues) throw new Error("Error parsing jump instruction");
+//   if (jValues?.length > 2 || jValues?.length == 0) {
+//     throw new Error("Error parsing jump instruction");
+//   }
+
+//   return jValues.slice(2);
+// }
+
+// function getDest(instruction: string): JumpValues {
+//   const jmpValues = instruction.match(jmp);
+//   return "A";
+// }
 
 function getA(instruction: string): string {
   const aValue = instruction.match(aInstruction);

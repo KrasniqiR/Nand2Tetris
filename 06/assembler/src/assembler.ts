@@ -1,6 +1,6 @@
 import { join } from "../deps.ts";
 import { code } from "./code.ts";
-import {parse} from './parser.ts';
+import { parse } from "./parser.ts";
 
 async function assemble() {
   const fileName = join(Deno.cwd(), Deno.args[0]);

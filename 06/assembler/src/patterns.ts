@@ -26,5 +26,5 @@ export const jmp = /(\d+|[A-Z]+);([A-Z]+)/;
 /**
  * Matches dest, comp and jump fields with named capture groups of comp instruction.
  */
-export const comp = /^(?=)(?<dest>A|M|D|null)?=?(?<comp>((\!|-)(A|M|D))|(A|M|D)(-|\+|\&|\|)(A|M|D))?;?(?<=;)(?<jump>null|J([A-Z]{2}))/;
-
+export const cInstruction =
+  /^(?=)(?<dest>(A|M|D|null){0,3})?=?(?<comp>((\!|-)(A|M|D))|(A|M|D)(-|\+|\&|\|)(A|M|D))?;?(?<=;)(?<jump>null|J([A-Z]{2}))/;

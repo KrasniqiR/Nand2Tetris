@@ -9,7 +9,9 @@ Deno.test("Parses a C instructions", () => {
     ["M+D;JGE", { dest: undefined, comp: "M+D", jump: "JGE" }],
     [";JGE", { dest: undefined, comp: undefined, jump: "JGE" }],
     ["M+D", { dest: undefined, comp: "M+D", jump: undefined }],
-    // ["0", {dest: undefined, comp: "0", jump: undefined}],
+    ["0", {dest: undefined, comp: "0", jump: undefined}],
+    ["1", {dest: undefined, comp: "1", jump: undefined}],
+    ["-1", {dest: undefined, comp: "-1", jump: undefined}],
   ];
 
   const invalidInstructions : Array<string> = [

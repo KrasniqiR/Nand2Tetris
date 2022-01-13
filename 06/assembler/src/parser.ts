@@ -95,7 +95,9 @@ function getCommandType(command: string): CommandType {
 function getC(instruction: string): CValues {
   const compValues = instruction.match(cInstruction);
 
-  if (!compValues?.groups) throw new Error("Invalid C instruction");
+  if (!compValues?.groups) throw new Error(`Invalid C instruction:
+   ${instruction}
+   `);
 
   const { comp, dest, jump } = compValues.groups;
 

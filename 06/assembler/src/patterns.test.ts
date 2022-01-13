@@ -15,12 +15,10 @@ Deno.test("Parses a C instructions", () => {
       "JGE",
   ]
 
-
   validInstructions.forEach(([instruction, expectedResult]) => {
     const result = instruction.match(cInstruction);
-    console.log("groups", result?.groups)
     assertExists(result?.groups);
-    assertObjectMatch(result?.groups, expectedResult);
+    assertObjectMatch(result.groups, expectedResult);
   });
 
   invalidInstructions.forEach((instruction) => {

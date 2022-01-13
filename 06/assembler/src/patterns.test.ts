@@ -5,8 +5,10 @@ import { cInstruction } from "./patterns.ts";
 Deno.test("Parses a C instructions", () => {
   const validInstructions: Array<[string, CValues]> = [
     ["AM=M+D;JGE", { dest: "AM", comp: "M+D", jump: "JGE" }],
+    ["AM=M+D", { dest: "AM", comp: "M+D", jump: undefined }],
     ["M+D;JGE", { dest: undefined, comp: "M+D", jump: "JGE" }],
     [";JGE", { dest: undefined, comp: undefined, jump: "JGE" }],
+    ["M+D", { dest: undefined, comp: "M+D", jump: undefined }],
     // ["0", {dest: undefined, comp: "0", jump: undefined}],
   ];
 

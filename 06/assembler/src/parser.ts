@@ -39,7 +39,7 @@ const DEST_VALUES = [
 
 type DestValues = typeof DEST_VALUES[number];
 
-type CValues = {
+export type CValues = {
   comp?: string;
   dest?: string;
   jump?: string;

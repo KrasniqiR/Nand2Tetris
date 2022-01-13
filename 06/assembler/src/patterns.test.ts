@@ -1,17 +1,30 @@
-import { assertExists, assertObjectMatch } from "../deps.ts";
+import { assertEquals, assertExists, assertObjectMatch } from "../deps.ts";
+import { CValues } from "./parser.ts";
 import { cInstruction } from "./patterns.ts";
 
 Deno.test("Parses a C instructions", () => {
-  const instructionsResultsMap: Array<[string, any]> = [
+  const validInstructions: Array<[string, CValues]> = [
     ["AM=M+D;JGE", { dest: "AM", comp: "M+D", jump: "JGE" }],
-    // ["0", {comp: "0"}],
+    ["M+D;JGE", { dest: undefined, comp: "M+D", jump: "JGE" }],
+    [";JGE", { dest: undefined, comp: undefined, jump: "JGE" }],
+    // ["0", {dest: undefined, comp: "0", jump: undefined}],
   ];
 
-  instructionsResultsMap.forEach(([instruction, expectedResult]) => {
-    console.log(instruction, expectedResult);
+  const invalidInstructions : Array<string> = [
+      "AMM+D;JGE",
+      "JGE",
+  ]
+
+
+  validInstructions.forEach(([instruction, expectedResult]) => {
     const result = instruction.match(cInstruction);
-    console.log(result);
+    console.log("groups", result?.groups)
     assertExists(result?.groups);
-    assertObjectMatch(result.groups, expectedResult);
+    assertObjectMatch(result?.groups, expectedResult);
+  });
+
+  invalidInstructions.forEach((instruction) => {
+      const result = instruction.match(cInstruction);
+      assertEquals(result?.groups, undefined);
   });
 });

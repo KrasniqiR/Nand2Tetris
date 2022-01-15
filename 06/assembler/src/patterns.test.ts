@@ -9,15 +9,15 @@ Deno.test("RexExp parses a C instructions into cmop, dest and jump values and re
     ["M+D;JGE", { dest: undefined, comp: "M+D", jump: "JGE" }],
     [";JGE", { dest: undefined, comp: undefined, jump: "JGE" }],
     ["M+D", { dest: undefined, comp: "M+D", jump: undefined }],
-    ["0", {dest: undefined, comp: "0", jump: undefined}],
-    ["1", {dest: undefined, comp: "1", jump: undefined}],
-    ["-1", {dest: undefined, comp: "-1", jump: undefined}],
+    ["0", { dest: undefined, comp: "0", jump: undefined }],
+    ["1", { dest: undefined, comp: "1", jump: undefined }],
+    ["-1", { dest: undefined, comp: "-1", jump: undefined }],
   ];
 
-  const invalidInstructions : Array<string> = [
-      "AMM+D;JGE",
-      "JGE",
-  ]
+  const invalidInstructions: Array<string> = [
+    "AMM+D;JGE",
+    "JGE",
+  ];
 
   validInstructions.forEach(([instruction, expectedResult]) => {
     const result = instruction.match(cInstruction);
@@ -26,7 +26,7 @@ Deno.test("RexExp parses a C instructions into cmop, dest and jump values and re
   });
 
   invalidInstructions.forEach((instruction) => {
-      const result = instruction.match(cInstruction);
-      assertEquals(result?.groups, undefined);
+    const result = instruction.match(cInstruction);
+    assertEquals(result?.groups, undefined);
   });
 });

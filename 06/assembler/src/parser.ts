@@ -9,7 +9,6 @@ type CommandType =
 type CompMemoryReferences = "A" | "M" | "D";
 type PairOperators = "+" | "-" | "|" | "&" | "!";
 type SingularOperators = "-" | "!";
-
 type CompValues = string;
 
 const JUMP_MNEMONICS = [
@@ -46,16 +45,16 @@ export type CValues = {
 };
 
 type ParseResult =
-  | (
-    & {
-      commandType: "C";
-    }
-    & (
-      CValues
+  & { error?: Error }
+  & (
+    | { commandType: "A" | "L"; symbol: string }
+    | (
+      & {
+        commandType: "C";
+      }
+      & CValues
     )
-  )
-  | { commandType: "A" | "L"; symbol: string }
-  | { error: Error };
+  );
 
 export function parse(instruction: string): ParseResult {
   // Ignore all whitespace
@@ -95,9 +94,11 @@ function getCommandType(command: string): CommandType {
 function getC(instruction: string): CValues {
   const compValues = instruction.match(cInstruction);
 
-  if (!compValues?.groups) throw new Error(`Invalid C instruction:
+  if (!compValues?.groups) {
+    throw new Error(`Invalid C instruction:
    ${instruction}
    `);
+  }
 
   const { comp, dest, jump } = compValues.groups;
 
@@ -112,26 +113,11 @@ function getC(instruction: string): CValues {
   return { comp, dest, jump };
 }
 
-// function getJump(instruction: string): JumpValues {
-//   const jValues = instruction.match(jmp);
-//   if (!jValues) throw new Error("Error parsing jump instruction");
-//   if (jValues?.length > 2 || jValues?.length == 0) {
-//     throw new Error("Error parsing jump instruction");
-//   }
-
-//   return jValues.slice(2);
-// }
-
-// function getDest(instruction: string): JumpValues {
-//   const jmpValues = instruction.match(jmp);
-//   return "A";
-// }
-
 function getA(instruction: string): string {
   const aValue = instruction.match(aInstruction);
 
   if (aValue?.length !== 1) {
-    throw new Error("Could not parse A instruction");
+    throw new Error("Unable to parse A instruction");
   }
 
   return aValue[0];
@@ -140,7 +126,7 @@ function getA(instruction: string): string {
 function getL(instruction: string): string {
   const labelValue = instruction.match(label);
   if (labelValue?.length !== 1) {
-    throw new Error("Could not parse A instruction");
+    throw new Error("Unable to parse L instruction");
   }
   return labelValue[0];
 }

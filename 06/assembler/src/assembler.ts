@@ -7,20 +7,35 @@ async function assemble() {
   const assemblyProgram = await Deno.readTextFile(fileName);
   const lines = assemblyProgram.split("\n");
 
-  let binary = [];
+  let instructionBinaries = [];
 
   for await (let line of lines) {
-    const { commandType, symbol, comp, dest, jump, error } = parse(line);
-
-    if (error) {
-      console.error(error);
-      Deno.exit(1);
+    const parseResult = parse(line);
+    if (parseResult.error) {
+      throw parseResult.error;
     }
 
-    if (commandType === "C") {
-      const binaryLine = code({ comp, dest, jump });
-      binary.push(binaryLine);
+    switch (parseResult.commandType) {
+      case "C": 
+         const binary = `111${compField(parseResult.comp)}${destField(parseResult.dest)}${jumpField(parseResult.jump)}`;
+         instructionBinaries.push(binary);
+         break;
+      case "A":
+        
+        break;
+      case "L":
+        break;
+      default: {
+        return;
+      }
     }
+    // const storeInstruction
+
+    // if (error) {x
+    //   console.error(error);
+    //   Deno.exit(1);
+    // }
+
   }
 }
 

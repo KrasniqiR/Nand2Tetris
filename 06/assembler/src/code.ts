@@ -48,6 +48,7 @@ const compInstructions = [
   "D&M",
   "D|M",
 ];
+
 type JumpInstruction = typeof jumpInstructions[number];
 type DestInstruction = typeof destInstructions[number];
 type CompInstruction = typeof compInstructions[number];
@@ -137,5 +138,4 @@ function jumpField(mnemonic?: string): string {
     );
   }
   return binary;
-
 }

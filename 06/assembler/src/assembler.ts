@@ -1,6 +1,7 @@
 import { join } from "../deps.ts";
 import { code } from "./code.ts";
 import { parse } from "./parser.ts";
+import { leftPad } from "./util.ts";
 
 async function assemble() {
   const fileName = join(Deno.cwd(), Deno.args[0]);
@@ -13,19 +14,28 @@ async function assemble() {
     const parseResult = parse(line);
     if (parseResult.error) {
       throw parseResult.error;
-    }
+    }   
 
     switch (parseResult.commandType) {
-      case "C": 
-         const binary = `111${compField(parseResult.comp)}${destField(parseResult.dest)}${jumpField(parseResult.jump)}`;
-         instructionBinaries.push(binary);
-         break;
-      case "A":
-        
+      case "C": {
+        const binary = `111${compField(parseResult.comp)}${destField(parseResult.dest)}${jumpField(parseResult.jump)}`;
+        instructionBinaries.push(binary);
         break;
-      case "L":
+      }
+      case "A": {
+        const address = parseInt(parseResult.symbol);
+        const binary = `0${leftPad(floatToBinary(address), 15, '0')}`;
+        instructionBinaries.push(binary)
         break;
-      default: {
+      }
+      case "L": {
+        //TODO: Convert to instruction address.
+        const address = parseInt(parseResult.symbol);
+        const binary = `0${leftPad(floatToBinary(address), 15, '0')}`;
+        instructionBinaries.push(binary)
+        break;
+      }
+      default: { 
         return;
       }
     }
@@ -37,6 +47,10 @@ async function assemble() {
     // }
 
   }
+}
+
+function floatToBinary(number: number) {
+  return (number >>> 0).toString(2);
 }
 
 function insertSybols() {

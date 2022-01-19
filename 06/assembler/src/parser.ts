@@ -1,4 +1,5 @@
 import { aInstruction, cInstruction, label } from "./patterns.ts";
+import { addSymbolTableEntry } from "./symbol_table.ts";
 
 type CommandType =
   /** A instruction (set M) */
@@ -76,6 +77,30 @@ export function parse(instruction: string): ParseResult {
   } catch (error) {
     return { error };
   }
+}
+
+export function injectSymbols(instructions: string[], symbolTable: Record<string, number>) {
+  /**
+   * 1. Label check
+   *    a. Check if label in table
+   *    b. Add label to table (i + 1)
+   *    c. Pop instruction from array. 
+   * 2. Variable check
+   *    a. Check if symbol in table
+   *    b. If in table, replace with symbol value
+   *    c. Add Symbol as iterated next
+   */
+
+  let symbolInjectedInstructions = [];
+
+  instructions.forEach((instruction, index) => {
+   const isLabel = label.test(instruction);
+   if (isLabel) {
+     const label = getL(instruction);
+     addSymbolTableEntry(label, "instruction");
+     
+   }
+  })
 }
 
 function getCommandType(command: string): CommandType {

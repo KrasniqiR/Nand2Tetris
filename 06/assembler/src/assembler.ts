@@ -14,7 +14,7 @@ async function assemble() {
     const parseResult = parse(line);
     if (parseResult.error) {
       throw parseResult.error;
-    }   
+    }
 
     switch (parseResult.commandType) {
       case "C": {

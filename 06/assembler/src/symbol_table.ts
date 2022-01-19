@@ -1,4 +1,7 @@
-export const SymbolTable = {
+let nextROMAddress = 0;
+let nextRAMAddress = 16;
+
+export const SymbolTable: Record<string, number> = {
   SP: 0,
   LCL: 1,
   ARG: 2,
@@ -23,3 +26,12 @@ export const SymbolTable = {
   SCREEN: 16384,
   KBD: 24576,
 };
+
+export function addSymbolTableEntry(symbol: string, type: "instruction" | "variable") {
+    if (SymbolTable[symbol]) throw new Error(`${symbol} already exists.`);
+    if (type === "instruction") {
+      SymbolTable[symbol] = nextROMAddress++;
+    } else if (type === "variable") {
+      SymbolTable[symbol] = nextRAMAddress++;
+    }
+}

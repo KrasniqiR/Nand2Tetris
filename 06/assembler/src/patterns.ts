@@ -28,3 +28,5 @@ export const jmp = /(\d+|[A-Z]+);([A-Z]+)/;
  */
 export const cInstruction =
   /^((?=)(?<dest>(A|M|D|null){0,3})?=)?(?<comp>((0|1|-1)|(\!|-)(A|M|D))|(A|M|D)(-|\+|\&|\|)(A|M|D))?(;(?<=;)(?<jump>null|J([A-Z]{2})))?$/;
+
+export const variable = /^@(?<variable>[a-zA-Z].*)/;

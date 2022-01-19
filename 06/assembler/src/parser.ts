@@ -1,4 +1,4 @@
-import { aInstruction, cInstruction, label } from "./patterns.ts";
+import { aInstruction, cInstruction, label, variable } from "./patterns.ts";
 import { addSymbolTableEntry } from "./symbol_table.ts";
 
 type CommandType =
@@ -96,18 +96,15 @@ export function injectSymbols(
 
   let symbolInjectedInstructions: string[] = [];
   let newLabels: string[] = [];
+  let newVariables: string[] = [];
 
   instructions.forEach((instruction, index) => {
     const isLabel = label.test(instruction);
     if (isLabel) {
       const label = getL(instruction);
       addSymbolTableEntry(label, "instruction", index);
-      const replacedInstruction = instruction.replace(
-        label,
-        `${symbolTable[label]}`,
-      );
-      symbolInjectedInstructions.push(replacedInstruction);
       newLabels.push(label);
+      return;
     } else {
       symbolInjectedInstructions.push(instruction);
     }
@@ -118,6 +115,22 @@ export function injectSymbols(
       instruction.replace(label, `${symbolTable[label]}`)
     );
   });
+
+  instructions.forEach((instruction, index) => {
+    const varName = instruction.match(variable)?.groups?.variable;
+    
+    if (varName && !symbolTable[varName]) {
+      addSymbolTableEntry(varName, "variable");
+      newVariables.push(varName);
+    }
+  });
+
+  newVariables.forEach((variable) => {
+    symbolInjectedInstructions = symbolInjectedInstructions.map((instruction) =>
+      instruction.replace(variable, `${symbolTable[variable]}`)
+    );
+  });
+
 }
 
 function getCommandType(command: string): CommandType {

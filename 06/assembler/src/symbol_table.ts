@@ -27,13 +27,17 @@ export const SymbolTable: Record<string, number> = {
   KBD: 24576,
 };
 
-export function addSymbolTableEntry(symbol: string, type: "instruction" | "variable", value?: number) {
-    if (SymbolTable[symbol]) throw new Error(`${symbol} already exists.`);
+export function addSymbolTableEntry(
+  symbol: string,
+  type: "instruction" | "variable",
+  value?: number,
+) {
+  if (SymbolTable[symbol]) throw new Error(`${symbol} already exists.`);
 
-    if (type === "instruction") {
-      SymbolTable[symbol] = value ?? 0;
-      latestROMAddress = SymbolTable[symbol];
-    } else if (type === "variable") {
-      SymbolTable[symbol] = ++latestRAMAddress;
-    }
+  if (type === "instruction") {
+    SymbolTable[symbol] = value ?? 0;
+    latestROMAddress = SymbolTable[symbol];
+  } else if (type === "variable") {
+    SymbolTable[symbol] = ++latestRAMAddress;
+  }
 }

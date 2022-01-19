@@ -18,24 +18,26 @@ async function assemble() {
 
     switch (parseResult.commandType) {
       case "C": {
-        const binary = `111${compField(parseResult.comp)}${destField(parseResult.dest)}${jumpField(parseResult.jump)}`;
+        const binary = `111${compField(parseResult.comp)}${
+          destField(parseResult.dest)
+        }${jumpField(parseResult.jump)}`;
         instructionBinaries.push(binary);
         break;
       }
       case "A": {
         const address = parseInt(parseResult.symbol);
-        const binary = `0${leftPad(floatToBinary(address), 15, '0')}`;
-        instructionBinaries.push(binary)
+        const binary = `0${leftPad(floatToBinary(address), 15, "0")}`;
+        instructionBinaries.push(binary);
         break;
       }
       case "L": {
         //TODO: Convert to instruction address.
         const address = parseInt(parseResult.symbol);
-        const binary = `0${leftPad(floatToBinary(address), 15, '0')}`;
-        instructionBinaries.push(binary)
+        const binary = `0${leftPad(floatToBinary(address), 15, "0")}`;
+        instructionBinaries.push(binary);
         break;
       }
-      default: { 
+      default: {
         return;
       }
     }
@@ -45,7 +47,6 @@ async function assemble() {
     //   console.error(error);
     //   Deno.exit(1);
     // }
-
   }
 }
 

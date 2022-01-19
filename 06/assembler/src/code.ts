@@ -126,7 +126,6 @@ function compField(mnemonic?: string): string {
     );
   }
   return binary;
-  
 }
 
 function jumpField(mnemonic?: string): string {

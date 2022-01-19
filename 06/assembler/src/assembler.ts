@@ -1,12 +1,15 @@
 import { join } from "../deps.ts";
-import { code } from "./code.ts";
 import { parse } from "./parser.ts";
+import { preProcess } from "./preProcess.ts";
+import { SymbolTable } from "./symbol_table.ts";
 import { leftPad } from "./util.ts";
 
 async function assemble() {
   const fileName = join(Deno.cwd(), Deno.args[0]);
   const assemblyProgram = await Deno.readTextFile(fileName);
-  const lines = assemblyProgram.split("\n");
+
+  const program = assemblyProgram.split("\n");
+  const lines = preProcess(program, SymbolTable);
 
   let instructionBinaries = [];
 
@@ -52,7 +55,4 @@ async function assemble() {
 
 function floatToBinary(number: number) {
   return (number >>> 0).toString(2);
-}
-
-function insertSybols() {
 }

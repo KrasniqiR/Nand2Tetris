@@ -1,5 +1,5 @@
-let nextROMAddress = 0;
-let nextRAMAddress = 16;
+let latestROMAddress = 0;
+let latestRAMAddress = 15;
 
 export const SymbolTable: Record<string, number> = {
   SP: 0,
@@ -27,11 +27,13 @@ export const SymbolTable: Record<string, number> = {
   KBD: 24576,
 };
 
-export function addSymbolTableEntry(symbol: string, type: "instruction" | "variable") {
+export function addSymbolTableEntry(symbol: string, type: "instruction" | "variable", value?: number) {
     if (SymbolTable[symbol]) throw new Error(`${symbol} already exists.`);
+
     if (type === "instruction") {
-      SymbolTable[symbol] = nextROMAddress++;
+      SymbolTable[symbol] = value ?? 0;
+      latestROMAddress = SymbolTable[symbol];
     } else if (type === "variable") {
-      SymbolTable[symbol] = nextRAMAddress++;
+      SymbolTable[symbol] = ++latestRAMAddress;
     }
 }

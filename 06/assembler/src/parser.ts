@@ -97,10 +97,16 @@ export function injectSymbols(instructions: string[], symbolTable: Record<string
    const isLabel = label.test(instruction);
    if (isLabel) {
      const label = getL(instruction);
-     addSymbolTableEntry(label, "instruction");
+     addSymbolTableEntry(label, "instruction", index);
+     const replacedInstruction = instruction.replace(label, `${symbolTable[label]}`);
+     symbolInjectedInstructions.push(replacedInstruction);
      
+   } else {
+     symbolInjectedInstructions.push(instruction);
    }
-  })
+  });
+
+
 }
 
 function getCommandType(command: string): CommandType {

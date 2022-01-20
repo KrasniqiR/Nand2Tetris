@@ -40,15 +40,12 @@ export type CValues = {
 };
 
 type ParseResult =
-  & { error?: Error }
-  & (
-    | { commandType: "A" | "L"; symbol: string }
-    | (
-      & {
-        commandType: "C";
-      }
-      & CValues
-    )
+  | { commandType: "A" | "L"; symbol: string }
+  | (
+    & {
+      commandType: "C";
+    }
+    & CValues
   );
 
 export function parse(instruction: string): ParseResult {
@@ -69,7 +66,7 @@ export function parse(instruction: string): ParseResult {
         };
     }
   } catch (error) {
-    return { error };
+    throw error;
   }
 }
 

@@ -3,11 +3,12 @@ import { parse } from "./parser.ts";
 import { preProcess } from "./preProcess.ts";
 import { SymbolTable } from "./symbol_table.ts";
 import { leftPad } from "./util.ts";
+import {destField, jumpField, compField} from './code.ts'
 
 async function assemble() {
   const fileName = join(Deno.cwd(), Deno.args[0]);
   const assemblyProgram = await Deno.readTextFile(fileName);
-
+  
   const program = assemblyProgram.split("\n");
   const lines = preProcess(program, SymbolTable);
 
@@ -53,6 +54,11 @@ async function assemble() {
   }
 }
 
+
+
 function floatToBinary(number: number) {
   return (number >>> 0).toString(2);
+}
+
+function insertSybols() {
 }

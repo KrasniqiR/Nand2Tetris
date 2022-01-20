@@ -106,7 +106,7 @@ const compInstructionMap = {
   "D|M": "1010101",
 };
 
-function destField(mnemonic?: string): string {
+export function destField(mnemonic?: string): string {
   if (!mnemonic) return "000";
   const binary = destInstructionMap[mnemonic];
   if (!binary) {
@@ -117,7 +117,7 @@ function destField(mnemonic?: string): string {
   return binary;
 }
 
-function compField(mnemonic?: string): string {
+export function compField(mnemonic?: string): string {
   if (!mnemonic) return "0000000";
   const binary = compInstructionMap[mnemonic];
   if (!binary) {
@@ -128,7 +128,7 @@ function compField(mnemonic?: string): string {
   return binary;
 }
 
-function jumpField(mnemonic?: string): string {
+export function jumpField(mnemonic?: string): string {
   if (!mnemonic) return "000";
   const binary = jumpInstructionMap[mnemonic];
   if (!binary) {

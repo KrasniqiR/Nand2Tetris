@@ -1,16 +1,10 @@
-import { aInstruction, cInstruction, label, variable } from "./patterns.ts";
-import { addSymbolTableEntry } from "./symbol_table.ts";
+import { aInstruction, cInstruction, label } from "./patterns.ts";
 
 type CommandType =
   /** A instruction (set M) */
   | "A"
   | /** Comp instruction */ "C"
   | /** L instruction (Assign symbol) */ "L";
-
-type CompMemoryReferences = "A" | "M" | "D";
-type PairOperators = "+" | "-" | "|" | "&" | "!";
-type SingularOperators = "-" | "!";
-type CompValues = string;
 
 const JUMP_MNEMONICS = [
   "null",

@@ -1,6 +1,9 @@
-// Sourced from https://deno.land/std@0.121.0/node/_module/node_modules/left-pad/index.js
+export function floatToBinary(number: number) {
+  return (number >>> 0).toString(2);
+}
 
-const cache = [
+// Sourced from https://deno.land/std@0.121.0/node/_module/node_modules/left-pad/index.js
+const cache: string[] = [
   "",
   " ",
   "  ",

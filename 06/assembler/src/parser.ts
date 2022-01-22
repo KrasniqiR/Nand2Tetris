@@ -1,4 +1,4 @@
-import { aInstruction, cInstruction, label } from "./patterns.ts";
+import { aInstruction, cInstructionComposed as cInstruction, label } from "./patterns.ts";
 
 type CommandType =
   /** A instruction (set M) */

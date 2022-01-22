@@ -1,4 +1,4 @@
-export const source = (expression: RegExp) => expression.source;
+export const source = (expr: RegExp | string): string => expr instanceof RegExp ?  expr.source : expr;
 
 export const or = (...args: RegExp[]) =>
   [...args].map((r) => source(r)).join("|");
@@ -7,7 +7,7 @@ export function rExp(
   strings: TemplateStringsArray,
   ...args: Array<RegExp | string>
 ): RegExp {
-  const sources = [...args].map((s) => s instanceof RegExp ? s.source : s);
+  const sources = [...args].map((s) => source(s));
   const longestLength = Math.max(strings.length, args.length);
 
   const merged = [];

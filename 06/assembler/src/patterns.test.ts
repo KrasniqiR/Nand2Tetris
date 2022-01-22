@@ -1,8 +1,8 @@
 import { assertEquals, assertExists, assertObjectMatch } from "../deps.ts";
 import { CValues } from "./parser.ts";
-import { aInstruction, cInstruction, label } from "./patterns.ts";
+import { aInstruction, cInstructionComposed, label } from "./patterns.ts";
 
-Deno.test("RexExp parses a C instructions into cmop, dest and jump values and returns undefined if instruction is invalid.", () => {
+Deno.test("RexExp parses a C instructions into comp, dest and jump values and returns undefined if instruction is invalid.", () => {
   const validInstructions: Array<[string, CValues]> = [
     ["AM=M+D;JGE", { dest: "AM", comp: "M+D", jump: "JGE" }],
     ["AM=M+D", { dest: "AM", comp: "M+D", jump: undefined }],
@@ -20,13 +20,13 @@ Deno.test("RexExp parses a C instructions into cmop, dest and jump values and re
   ];
 
   validInstructions.forEach(([instruction, expectedResult]) => {
-    const result = instruction.match(cInstruction);
+    const result = instruction.match(cInstructionComposed);
     assertExists(result?.groups);
     assertObjectMatch(result.groups, expectedResult);
   });
 
   invalidInstructions.forEach((instruction) => {
-    const result = instruction.match(cInstruction);
+    const result = instruction.match(cInstructionComposed);
     assertEquals(result?.groups, undefined);
   });
 });
@@ -49,12 +49,12 @@ Deno.test("A instruction patterns correctly detect and parse A values or symbols
 Deno.test("L instruction pattern correctly detects and parses L instructions", () => {
   const validInstructions: Array<[string, string]> = [
     ["(LOOP)", "LOOP"],
-    ["(WHILE)", "WHILE"]
-  ]
+    ["(WHILE)", "WHILE"],
+  ];
 
   validInstructions.forEach(([instruction, expectedResult]) => {
     const result = instruction.match(label);
     assertExists(result?.[0]);
     assertEquals(result[0], expectedResult);
-  })
+  });
 });

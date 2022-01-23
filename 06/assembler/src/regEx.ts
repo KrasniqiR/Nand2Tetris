@@ -1,4 +1,5 @@
-export const source = (expr: RegExp | string): string => expr instanceof RegExp ?  expr.source : expr;
+export const source = (expr: RegExp | string): string =>
+  expr instanceof RegExp ? expr.source : expr;
 
 export const or = (...args: RegExp[]) =>
   [...args].map((r) => source(r)).join("|");

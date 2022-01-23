@@ -13,30 +13,30 @@ async function assemble() {
   const lines = preProcess(program, SymbolTable);
 
   const binaryInstructions = lines.map((line) => {
-    const parseResult = parse(line);
+    try {
+      const parseResult = parse(line);
 
-    if (parseResult.error) {
-      throw parseResult.error;
-    }
-
-    switch (parseResult.commandType) {
-      case "C": {
-        const binary = `111${compField(parseResult.comp)}${
-          destField(parseResult.dest)
-        }${jumpField(parseResult.jump)}`;
-        return binary;
+      switch (parseResult.commandType) {
+        case "C": {
+          const binary = `111${compField(parseResult.comp)}${
+            destField(parseResult.dest)
+          }${jumpField(parseResult.jump)}`;
+          return binary;
+        }
+        case "A": {
+          const address = parseInt(parseResult.symbol);
+          const binary = `0${leftPad(floatToBinary(address), 15, "0")}`;
+          return binary;
+        }
+        case "L": {
+          //TODO: Convert to instruction address.
+          const address = parseInt(parseResult.symbol);
+          const binary = `0${leftPad(floatToBinary(address), 15, "0")}`;
+          return binary;
+        }
       }
-      case "A": {
-        const address = parseInt(parseResult.symbol);
-        const binary = `0${leftPad(floatToBinary(address), 15, "0")}`;
-        return binary;
-      }
-      case "L": {
-        //TODO: Convert to instruction address.
-        const address = parseInt(parseResult.symbol);
-        const binary = `0${leftPad(floatToBinary(address), 15, "0")}`;
-        return binary;
-      }
+    } catch (e) {
+      throw new Error(e);
     }
   });
 

@@ -49,7 +49,10 @@ function injectLabels(
     const isLabel = label.test(instruction);
     if (isLabel) {
       const label = getL(instruction);
-      addSymbolTableEntry(label, "instruction", index + 1);
+      // Label instructions are omitted from result set, so create a -ve offset equal to number of previously added labels
+      const nextInstructionOffset = newLabels.length;
+      const nextInstructionIndex = index - nextInstructionOffset + 1;
+      addSymbolTableEntry(label, "instruction", nextInstructionIndex);
       newLabels.push(label);
       // If label declared, omit this line from the result.
       return;

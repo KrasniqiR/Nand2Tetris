@@ -12,6 +12,7 @@ Deno.test("RexExp parses a C instructions into comp, dest and jump values and re
     ["0", { dest: undefined, comp: "0", jump: undefined }],
     ["1", { dest: undefined, comp: "1", jump: undefined }],
     ["-1", { dest: undefined, comp: "-1", jump: undefined }],
+    ["D=A", { dest: "D", comp: "A", jump: undefined }],
   ];
 
   const invalidInstructions: Array<string> = [

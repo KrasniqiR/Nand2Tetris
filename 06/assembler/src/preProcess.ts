@@ -1,5 +1,5 @@
 import { getA, getL } from "./parser.ts";
-import { aInstruction, label, symbol, variable } from "./patterns.ts";
+import { aInstruction, label, symbol } from "./patterns.ts";
 import { addSymbolTableEntry } from "./symbol_table.ts";
 
 export function preProcess(

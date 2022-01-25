@@ -53,20 +53,18 @@ type ParseResult =
   );
 
 export function parse(instruction: string): ParseResult {
-  // Ignore all whitespace
-  const trimmedInstruction = instruction.replaceAll(/\s*/, "");
   try {
-    const commandType = getCommandType(trimmedInstruction);
+    const commandType = getCommandType(instruction);
 
     switch (commandType) {
       case "A":
-        return { commandType, symbol: getA(trimmedInstruction) };
+        return { commandType, symbol: getA(instruction) };
       case "L":
-        return { commandType, symbol: getL(trimmedInstruction) };
+        return { commandType, symbol: getL(instruction) };
       case "C":
         return {
           commandType,
-          ...getC(trimmedInstruction),
+          ...getC(instruction),
         };
     }
   } catch (error) {

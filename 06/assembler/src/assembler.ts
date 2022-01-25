@@ -1,4 +1,4 @@
-import { join } from "../deps.ts";
+import { basename, join } from "../deps.ts";
 import { parse } from "./parser.ts";
 import { preProcess } from "./preProcess.ts";
 import { SymbolTable } from "./symbol_table.ts";
@@ -39,7 +39,9 @@ async function assemble() {
       }
     });
     const binary = binaryInstructions.join("\n");
-    console.log({ binary });
+    const outFileName = join(Deno.cwd(), `${basename(Deno.args[0])}.asm`)
+    console.log(`Writing to ${outFileName}`);
+    await Deno.writeTextFile(outFileName, binary);
   } catch (e) {
     console.error(e);
   }

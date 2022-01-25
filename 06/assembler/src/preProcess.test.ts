@@ -1,5 +1,5 @@
 import { assertEquals } from "../deps.ts";
-import { injectSymbols, preProcess } from "./preProcess.ts";
+import { injectLabels, injectSymbols, injectVariables, preProcess } from "./preProcess.ts";
 import { SymbolTable } from "./symbol_table.ts";
 
 Deno.test('Preprocess strips comments, whitespace and injects symbols', () => {
@@ -30,4 +30,23 @@ Deno.test("injectSymbols replaces variables and labels with ROM and RAM addresse
 
  const result = injectSymbols(instructions, SymbolTable);
  assertEquals(result, expectedResult);
+})
+
+Deno.test("injectLabels replaces labels with ROM addresses", () => {
+ const instructions = ["(LOOP)", "2", "@D=A", "@Varname","(WHILE)",  "@3", "D=D+A", "@0", "M=D"];
+ const expectedResult = ["2", "@D=A", "@Varname", "@3", "D=D+A", "@0", "M=D"];
+
+ const result = injectLabels(instructions, SymbolTable);
+ assertEquals(result, expectedResult);
+ assertEquals(SymbolTable["LOOP"], 0);
+ assertEquals(SymbolTable["WHILE"], 3);
+});
+
+Deno.test("injectVariables adds to the symbolMap and injects symbol address into instructions", () => {
+    const instructions = ["(LOOP)", "2", "@D=A", "@Varname", "@3", "D=D+A", "@0", "M=D"];
+    const expectedResult = ["(LOOP)", "2", "@D=A", "@16", "@3", "D=D+A", "@0", "M=D"];
+
+    const result = injectVariables(instructions, SymbolTable);
+    assertEquals(result, expectedResult);
+    assertEquals(SymbolTable["Varname"], 16);
 })

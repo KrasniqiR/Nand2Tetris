@@ -1,5 +1,5 @@
-import { getL } from "./parser.ts";
-import { label, variable } from "./patterns.ts";
+import { getA, getL } from "./parser.ts";
+import { aInstruction, label, symbol, variable } from "./patterns.ts";
 import { addSymbolTableEntry } from "./symbol_table.ts";
 
 export function preProcess(
@@ -38,7 +38,7 @@ export function injectSymbols(
  * @param instructions Array of assembly instructions. Ideally trimmed cleared of comments
  * @param symbolTable
  */
-function injectLabels(
+export function injectLabels(
   instructions: string[],
   symbolTable: Record<string, number>,
 ) {
@@ -49,11 +49,11 @@ function injectLabels(
     const isLabel = label.test(instruction);
     if (isLabel) {  
       const label = getL(instruction);
+      newLabels.push(label);
       // Label instructions are omitted from result set, so create a -ve offset equal to number of previously added labels
       const nextInstructionOffset = newLabels.length;
-      const nextInstructionIndex = index - nextInstructionOffset + 1;
+      const nextInstructionIndex = index + 1 - nextInstructionOffset;
       addSymbolTableEntry(label, "instruction", nextInstructionIndex);
-      newLabels.push(label);
       // If label declared, omit this line from the result.
       return;
     } else {
@@ -79,7 +79,7 @@ function injectLabels(
  * @param symbolTable
  * @returns
  */
-function injectVariables(
+export function injectVariables(
   instructions: string[],
   symbolTable: Record<string, number>,
 ) {
@@ -87,12 +87,17 @@ function injectVariables(
   let newVariables: string[] = [];
 
   instructions.forEach((instruction) => {
-    const varName = instruction.match(variable)?.groups?.variable;
-
-    if (varName && !symbolTable[varName]) {
-      addSymbolTableEntry(varName, "variable");
-      newVariables.push(varName);
+    const isAInstruction = aInstruction.test(instruction);
+    if (isAInstruction) {
+      const aInstruction = getA(instruction);
+      const isSymbol = symbol.test(aInstruction);
+      if (isSymbol) {
+        addSymbolTableEntry(aInstruction, "variable");
+        newVariables.push(aInstruction);
+      }
     }
+
+    result.push(instruction);
   });
 
   newVariables.forEach((variable) => {

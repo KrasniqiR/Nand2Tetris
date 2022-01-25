@@ -109,20 +109,24 @@ function getC(instruction: string): CValues {
   return { comp, dest, jump };
 }
 
-function getA(instruction: string): string {
-  const aValue = instruction.match(aInstruction);
+export function getA(instruction: string): string {
+  const result = instruction.match(aInstruction);
+  const aValue= result?.groups && result.groups.instruction;  
 
-  if (aValue?.length !== 1) {
+  if (!aValue) {
     throw new Error(`Unable to parse A instruction ${instruction}`);
   }
 
-  return aValue[0];
+  return aValue;
 }
 
 export function getL(instruction: string): string {
-  const labelValue = instruction.match(label);
-  if (labelValue?.length !== 1) {
+  const result = instruction.match(label);
+  const  labelValue= result?.groups && result.groups.label;  
+
+  if (!labelValue) {
     throw new Error(`Unable to parse L instruction ${instruction}`);
   }
-  return labelValue[0];
+
+  return labelValue;
 }

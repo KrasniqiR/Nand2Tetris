@@ -47,7 +47,7 @@ export function injectLabels(
 
   instructions.forEach((instruction, index) => {
     const isLabel = label.test(instruction);
-    if (isLabel) {  
+    if (isLabel) {
       const label = getL(instruction);
       newLabels.push(label);
       // Label instructions are omitted from result set, so create a -ve offset equal to number of previously added labels

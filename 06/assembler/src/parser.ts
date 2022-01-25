@@ -109,7 +109,7 @@ function getC(instruction: string): CValues {
 
 export function getA(instruction: string): string {
   const result = instruction.match(aInstruction);
-  const aValue= result?.groups && result.groups.instruction;  
+  const aValue = result?.groups && result.groups.instruction;
 
   if (!aValue) {
     throw new Error(`Unable to parse A instruction ${instruction}`);
@@ -120,7 +120,7 @@ export function getA(instruction: string): string {
 
 export function getL(instruction: string): string {
   const result = instruction.match(label);
-  const  labelValue= result?.groups && result.groups.label;  
+  const labelValue = result?.groups && result.groups.label;
 
   if (!labelValue) {
     throw new Error(`Unable to parse L instruction ${instruction}`);

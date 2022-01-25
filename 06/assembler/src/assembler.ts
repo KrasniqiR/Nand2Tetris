@@ -13,10 +13,9 @@ async function assemble() {
 
   const program = assemblyProgram.split("\n");
   try {
-
     const lines = preProcess(program, SymbolTable);
 
-  const binaryInstructions = lines.map((line) => {
+    const binaryInstructions = lines.map((line) => {
       const parseResult = parse(line);
 
       switch (parseResult.commandType) {
@@ -44,5 +43,4 @@ async function assemble() {
   } catch (e) {
     console.error(e);
   }
-
 }

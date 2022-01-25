@@ -12,12 +12,16 @@ export const constant = /\d+/;
  * Match an A instruction
  * Symbol or number starting with @
  */
-export const aInstruction = new RegExp(`^@${name(or(symbol, constant), 'instruction')}`);
+export const aInstruction = new RegExp(
+  `^@${name(or(symbol, constant), "instruction")}`,
+);
 /**
  * Match a label instruction e.g (LOOP)
  * Uppercase word
  */
-export const label = new RegExp(`^\\(${name(or(symbol, constant), 'label')}\\)`);
+export const label = new RegExp(
+  `^\\(${name(or(symbol, constant), "label")}\\)`,
+);
 /**
  * Match a JUMP instruction
  * Binding ; JUMP condition

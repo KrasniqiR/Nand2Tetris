@@ -7,11 +7,11 @@ export function preProcess(
   symbolTable: Record<string, number>,
 ) {
   const trimmedInstructions = instructions.map((instruction) =>
-    instruction.replaceAll(/\s*/, "")
+    instruction.replaceAll(/\s+/g, "")
   );
   // Remove comments
   const strippedInstructions = trimmedInstructions.filter((instruction) =>
-    instruction.startsWith("//") || instruction === ""
+    !(instruction.startsWith("//") || instruction === "")
   );
   const formattedProgram = injectSymbols(strippedInstructions, symbolTable);
   return formattedProgram;
@@ -47,7 +47,7 @@ function injectLabels(
 
   instructions.forEach((instruction, index) => {
     const isLabel = label.test(instruction);
-    if (isLabel) {
+    if (isLabel) {  
       const label = getL(instruction);
       // Label instructions are omitted from result set, so create a -ve offset equal to number of previously added labels
       const nextInstructionOffset = newLabels.length;

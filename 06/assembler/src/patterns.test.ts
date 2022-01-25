@@ -41,8 +41,8 @@ Deno.test("A instruction patterns correctly detect and parse A values or symbols
 
   validInstructions.forEach(([instruction, expectedResult]) => {
     const result = instruction.match(aInstruction);
-    assertExists(result?.[0]);
-    assertEquals(result[0], expectedResult);
+    assertExists(result?.groups);
+    assertEquals(result.groups.instruction, expectedResult);
   });
 });
 
@@ -54,7 +54,7 @@ Deno.test("L instruction pattern correctly detects and parses L instructions", (
 
   validInstructions.forEach(([instruction, expectedResult]) => {
     const result = instruction.match(label);
-    assertExists(result?.[0]);
-    assertEquals(result[0], expectedResult);
+    assertExists(result?.groups);
+    assertEquals(result?.groups.label, expectedResult);
   });
 });

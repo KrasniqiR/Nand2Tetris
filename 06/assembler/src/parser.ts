@@ -99,11 +99,11 @@ function getC(instruction: string): CValues {
   const { comp, dest, jump } = compValues.groups;
 
   if (jump && !JUMP_MNEMONICS.includes(jump as JumpMnemonic)) {
-    throw new Error("Invalid jump instruction");
+    throw new Error(`Invalid jump instruction ${jump}`);
   }
 
   if (dest && !DEST_VALUES.includes(dest as DestValues)) {
-    throw new Error("Invalid dest instruction");
+    throw new Error(`Invalid dest instruction ${dest}`);
   }
 
   return { comp, dest, jump };
@@ -113,7 +113,7 @@ function getA(instruction: string): string {
   const aValue = instruction.match(aInstruction);
 
   if (aValue?.length !== 1) {
-    throw new Error("Unable to parse A instruction");
+    throw new Error(`Unable to parse A instruction ${instruction}`);
   }
 
   return aValue[0];
@@ -122,7 +122,7 @@ function getA(instruction: string): string {
 export function getL(instruction: string): string {
   const labelValue = instruction.match(label);
   if (labelValue?.length !== 1) {
-    throw new Error("Unable to parse L instruction");
+    throw new Error(`Unable to parse L instruction ${instruction}`);
   }
   return labelValue[0];
 }

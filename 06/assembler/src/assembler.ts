@@ -5,15 +5,18 @@ import { SymbolTable } from "./symbol_table.ts";
 import { floatToBinary, leftPad } from "./util.ts";
 import { compField, destField, jumpField } from "./code.ts";
 
+assemble();
+
 async function assemble() {
   const fileName = join(Deno.cwd(), Deno.args[0]);
   const assemblyProgram = await Deno.readTextFile(fileName);
 
   const program = assemblyProgram.split("\n");
-  const lines = preProcess(program, SymbolTable);
+  try {
+
+    const lines = preProcess(program, SymbolTable);
 
   const binaryInstructions = lines.map((line) => {
-    try {
       const parseResult = parse(line);
 
       switch (parseResult.commandType) {
@@ -35,11 +38,11 @@ async function assemble() {
           return binary;
         }
       }
-    } catch (e) {
-      throw new Error(e);
-    }
-  });
+    });
+    const binary = binaryInstructions.join("\n");
+    console.log({ binary });
+  } catch (e) {
+    console.error(e);
+  }
 
-  const binary = binaryInstructions.join("\n");
-  console.log({ binary });
 }

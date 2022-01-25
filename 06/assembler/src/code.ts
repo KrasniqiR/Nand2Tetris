@@ -108,7 +108,7 @@ const compInstructionMap = {
 
 export function destField(mnemonic?: string): string {
   if (!mnemonic) return "000";
-  const binary = destInstructionMap[mnemonic];
+  const binary = (destInstructionMap as Record<string,string>)[mnemonic];
   if (!binary) {
     throw new Error(
       `Unable to translate dest mnemonic to binary instruction. Received: ${mnemonic}.`,
@@ -119,7 +119,7 @@ export function destField(mnemonic?: string): string {
 
 export function compField(mnemonic?: string): string {
   if (!mnemonic) return "0000000";
-  const binary = compInstructionMap[mnemonic];
+  const binary = (compInstructionMap as Record<string,string>)[mnemonic];
   if (!binary) {
     throw new Error(
       `Unable to translate comp mnemonic to binary instruction. Received: ${mnemonic}.`,
@@ -130,7 +130,7 @@ export function compField(mnemonic?: string): string {
 
 export function jumpField(mnemonic?: string): string {
   if (!mnemonic) return "000";
-  const binary = jumpInstructionMap[mnemonic];
+  const binary = (jumpInstructionMap as Record<string, string>)[mnemonic];
   if (!binary) {
     throw new Error(
       `Unable to translate jump mnemonic to binary instruction. Received: ${mnemonic}.`,

@@ -6,14 +6,25 @@ export function preProcess(
   instructions: string[],
   symbolTable: Record<string, number>,
 ) {
+  // Remove whitespace
   const trimmedInstructions = instructions.map((instruction) =>
     instruction.replaceAll(/\s+/g, "")
   );
-  // Remove comments
+  // Remove comments lines
   const strippedInstructions = trimmedInstructions.filter((instruction) =>
     !(instruction.startsWith("//") || instruction === "")
   );
-  const formattedProgram = injectSymbols(strippedInstructions, symbolTable);
+  // Trim inline comments from instructions
+  const instructionsNoInlineComments = strippedInstructions.map(instruction => {
+    const commentIndex = instruction.indexOf('//');
+    if (commentIndex !== -1) {
+      return instruction.slice(0, commentIndex);
+    } else {
+      return instruction;
+    }
+  });
+
+  const formattedProgram = injectSymbols(instructionsNoInlineComments, symbolTable);
   return formattedProgram;
 }
 
@@ -47,13 +58,13 @@ export function injectLabels(
 
   instructions.forEach((instruction, index) => {
     const isLabel = label.test(instruction);
-    if (isLabel) {
-      const label = getL(instruction);
-      newLabels.push(label);
+    const labelValue = isLabel ? getL(instruction) : undefined;
+    if (labelValue && !symbolTable[labelValue]) {
+      newLabels.push(labelValue);
       // Label instructions are omitted from result set, so create a -ve offset equal to number of previously added labels
       const nextInstructionOffset = newLabels.length;
       const nextInstructionIndex = index + 1 - nextInstructionOffset;
-      addSymbolTableEntry(label, "instruction", nextInstructionIndex);
+      addSymbolTableEntry(labelValue, "instruction", nextInstructionIndex);
       // If label declared, omit this line from the result.
       return;
     } else {
@@ -91,7 +102,7 @@ export function injectVariables(
     if (isAInstruction) {
       const aInstruction = getA(instruction);
       const isSymbol = symbol.test(aInstruction);
-      if (isSymbol) {
+      if (isSymbol && !symbolTable[aInstruction]) {
         addSymbolTableEntry(aInstruction, "variable");
         newVariables.push(aInstruction);
       }

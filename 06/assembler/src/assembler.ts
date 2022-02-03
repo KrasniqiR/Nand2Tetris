@@ -10,8 +10,8 @@ assemble();
 async function assemble() {
   const fileName = join(Deno.cwd(), Deno.args[0]);
   const assemblyProgram = await Deno.readTextFile(fileName);
-
   const program = assemblyProgram.split("\n");
+
   try {
     const lines = preProcess(program, SymbolTable);
 
@@ -38,9 +38,11 @@ async function assemble() {
         }
       }
     });
+
     const binary = binaryInstructions.join("\n");
     const outFileName = join(Deno.cwd(), `${basename(Deno.args[0])}.asm`)
     console.log(`Writing to ${outFileName}`);
+    
     await Deno.writeTextFile(outFileName, binary);
   } catch (e) {
     console.error(e);

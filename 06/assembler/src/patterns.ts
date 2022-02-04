@@ -30,7 +30,7 @@ export const jmp = /(\d+|[A-Z]+);([A-Z]+)/;
 
 export const dest = /(?<dest>(A|M|D|null){0,3})/;
 export const comp =
-  /(?<comp>((0|1|-1)|(\!|-)?(A|M|D))|(A|M|D)(-|\+|\&|\|)(A|M|D))/;
+  /(?<comp>((0|1|-1)|(\!|-)?(A|M|D))|(A|M|D)(-|\+|\&|\|)(A|M|D|1))/;
 export const jump = /(?<jump>null|J([A-Z]{2}))/;
 
 export const cInstructionComposed = rExp

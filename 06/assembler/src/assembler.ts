@@ -27,13 +27,19 @@ async function assemble() {
         }
         case "A": {
           const address = parseInt(parseResult.symbol);
-          const binary = `0${leftPad(floatToBinary(address), 15, "0")}`;
+          const binary = `0${floatToBinary(address).padStart(15, '0')}`;
+          if (binary.length > 16) {
+            throw new Error(`Overflow. 
+            Instruction: ${parseResult.symbol}
+            Result: ${binary}`);
+          }
+
           return binary;
         }
         case "L": {
           //TODO: Convert to instruction address.
           const address = parseInt(parseResult.symbol);
-          const binary = `0${leftPad(floatToBinary(address), 15, "0")}`;
+          const binary = `0${floatToBinary(address).padStart(15, '0')}`;
           return binary;
         }
       }

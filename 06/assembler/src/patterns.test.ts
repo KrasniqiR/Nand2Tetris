@@ -8,7 +8,7 @@ Deno.test("RexExp parses a C instructions into comp, dest and jump values and re
   const validInstructions: Array<[string, CValues]> = [
     ["AM=M+D;JGE", { dest: "AM", comp: "M+D", jump: "JGE" }],
     ["AM=M+D", { dest: "AM", comp: "M+D", jump: undefined }],
-    ["AM=M-1", {dest: "AM", comp: "M-1", jump: undefined}],
+    ["AM=M-1", { dest: "AM", comp: "M-1", jump: undefined }],
     ["M+D;JGE", { dest: undefined, comp: "M+D", jump: "JGE" }],
     [";JGE", { dest: undefined, comp: undefined, jump: "JGE" }],
     ["M+D", { dest: undefined, comp: "M+D", jump: undefined }],
@@ -63,16 +63,17 @@ Deno.test("L instruction pattern correctly detects and parses L instructions", (
   });
 });
 
-
-Deno.test('Variable replacement correctly replaces variables for addresses', () => {
+Deno.test("Variable replacement correctly replaces variables for addresses", () => {
   const variable = "ball.setdestination$if_true0";
   const symbolTable = {
-    "ball.setdestination$if_true0": 250
-  }
+    "ball.setdestination$if_true0": 250,
+  };
   const instructions: Array<[string, string]> = [
-    [`@${variable}`, "@250"], 
-  ]
+    [`@${variable}`, "@250"],
+  ];
 
-  
-  assertEquals(injectVariable(variable, instructions[0][0], symbolTable), '@250');
+  assertEquals(
+    injectVariable(variable, instructions[0][0], symbolTable),
+    "@250",
+  );
 });

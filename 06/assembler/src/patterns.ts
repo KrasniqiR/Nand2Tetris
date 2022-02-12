@@ -38,4 +38,4 @@ export const cInstructionComposed = rExp
 
 export const variable = /^@(?<variable>[a-zA-Z].*)/;
 
-export const escapeRegex  = (s: string) => s.replace(/(?=\W)/g, '\\');
+export const escapeRegex = (s: string) => s.replace(/(?=\W)/g, "\\");

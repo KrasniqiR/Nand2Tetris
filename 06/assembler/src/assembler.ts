@@ -2,7 +2,7 @@ import { basename, join } from "../deps.ts";
 import { parse } from "./parser.ts";
 import { preProcess } from "./preProcess.ts";
 import { SymbolTable } from "./symbol_table.ts";
-import { floatToBinary, leftPad } from "./util.ts";
+import { floatToBinary } from "./util.ts";
 import { compField, destField, jumpField } from "./code.ts";
 
 assemble();
@@ -27,28 +27,22 @@ async function assemble() {
         }
         case "A": {
           const address = parseInt(parseResult.symbol);
-          const binary = `0${floatToBinary(address).padStart(15, '0')}`;
-          // if (binary.length > 16) {
-          //   throw new Error(`Overflow. 
-          //   Instruction: ${parseResult.symbol}
-          //   Result: ${binary}`);
-          // }
-
+          const binary = `0${floatToBinary(address).padStart(15, "0")}`;
           return binary;
         }
         case "L": {
           //TODO: Convert to instruction address.
           const address = parseInt(parseResult.symbol);
-          const binary = `0${floatToBinary(address).padStart(15, '0')}`;
+          const binary = `0${floatToBinary(address).padStart(15, "0")}`;
           return binary;
         }
       }
     });
 
     const binary = binaryInstructions.join("\n");
-    const outFileName = join(Deno.cwd(), `${basename(Deno.args[0])}.hack`)
+    const outFileName = join(Deno.cwd(), `${basename(Deno.args[0])}.hack`);
     console.log(`Writing to ${outFileName}`);
-    
+
     await Deno.writeTextFile(outFileName, binary);
   } catch (e) {
     console.error(e);

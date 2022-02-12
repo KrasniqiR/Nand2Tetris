@@ -17,16 +17,21 @@ export function preProcess(
     !(instruction.startsWith("//") || instruction === "")
   );
   // Trim inline comments from instructions
-  const instructionsNoInlineComments = strippedInstructions.map(instruction => {
-    const commentIndex = instruction.indexOf('//');
-    if (commentIndex !== -1) {
-      return instruction.slice(0, commentIndex);
-    } else {
-      return instruction;
-    }
-  });
+  const instructionsNoInlineComments = strippedInstructions.map(
+    (instruction) => {
+      const commentIndex = instruction.indexOf("//");
+      if (commentIndex !== -1) {
+        return instruction.slice(0, commentIndex);
+      } else {
+        return instruction;
+      }
+    },
+  );
 
-  const formattedProgram = injectSymbols(instructionsNoInlineComments, symbolTable);
+  const formattedProgram = injectSymbols(
+    instructionsNoInlineComments,
+    symbolTable,
+  );
   return formattedProgram;
 }
 
@@ -107,13 +112,21 @@ export function injectVariables(
   const variables = Object.keys(symbolTable);
 
   variables.forEach((variable) => {
-    result = result.map(instruction => {
-      return injectVariable(variable, instruction, symbolTable)});
+    result = result.map((instruction) => {
+      return injectVariable(variable, instruction, symbolTable);
+    });
   });
 
   return result;
 }
 
-export function injectVariable(variable: string, instruction: string, symbolTable: typeof SymbolTable): string {
-  return instruction.replace(rExp`@${escapeRegex(variable)}$`, `@${symbolTable[variable]}`);
+export function injectVariable(
+  variable: string,
+  instruction: string,
+  symbolTable: typeof SymbolTable,
+): string {
+  return instruction.replace(
+    rExp`@${escapeRegex(variable)}$`,
+    `@${symbolTable[variable]}`,
+  );
 }

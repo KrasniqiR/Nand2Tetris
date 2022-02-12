@@ -4,7 +4,7 @@ import { name, or, rExp } from "./regEx.ts";
  * Match a symbol pattern e.g $varName. Must not start with a digit.
  * : _ $ . also allowed
  */
-export const symbol = /([A-z$\.:][A-z$\.\d:]+)/;
+export const symbol = /([A-z\$\.:_][A-z\$\.\d:_]+)/;
 
 export const constant = /\d+/;
 
@@ -13,14 +13,14 @@ export const constant = /\d+/;
  * Symbol or number starting with @
  */
 export const aInstruction = new RegExp(
-  `^@${name(or(symbol, constant), "instruction")}`,
+  `^@${name(or(symbol, constant), "instruction")}$`,
 );
 /**
  * Match a label instruction e.g (LOOP)
  * Uppercase word
  */
 export const label = new RegExp(
-  `^\\(${name(or(symbol, constant), "label")}\\)`,
+  `^\\(${name(or(symbol, constant), "label")}\\)$`,
 );
 /**
  * Match a JUMP instruction
@@ -37,3 +37,5 @@ export const cInstructionComposed = rExp
   `^(${dest}?=)?${comp}?(;(?<=;)${jump})?$`;
 
 export const variable = /^@(?<variable>[a-zA-Z].*)/;
+
+export const escapeRegex  = (s: string) => s.replace(/(?=\W)/g, '\\');

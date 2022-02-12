@@ -28,11 +28,11 @@ async function assemble() {
         case "A": {
           const address = parseInt(parseResult.symbol);
           const binary = `0${floatToBinary(address).padStart(15, '0')}`;
-          if (binary.length > 16) {
-            throw new Error(`Overflow. 
-            Instruction: ${parseResult.symbol}
-            Result: ${binary}`);
-          }
+          // if (binary.length > 16) {
+          //   throw new Error(`Overflow. 
+          //   Instruction: ${parseResult.symbol}
+          //   Result: ${binary}`);
+          // }
 
           return binary;
         }
@@ -46,7 +46,7 @@ async function assemble() {
     });
 
     const binary = binaryInstructions.join("\n");
-    const outFileName = join(Deno.cwd(), `${basename(Deno.args[0])}.asm`)
+    const outFileName = join(Deno.cwd(), `${basename(Deno.args[0])}.hack`)
     console.log(`Writing to ${outFileName}`);
     
     await Deno.writeTextFile(outFileName, binary);

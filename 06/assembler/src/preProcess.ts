@@ -1,6 +1,8 @@
 import { getA, getL } from "./parser.ts";
-import { aInstruction, label, symbol } from "./patterns.ts";
-import { addSymbolTableEntry } from "./symbol_table.ts";
+import { aInstruction, escapeRegex, label, symbol } from "./patterns.ts";
+import { rExp } from "./regEx.ts";
+import { addSymbolTableEntry, SymbolTable } from "./symbol_table.ts";
+import { isFiniteNumber } from "./util.ts";
 
 export function preProcess(
   instructions: string[],
@@ -59,7 +61,7 @@ export function injectLabels(
   instructions.forEach((instruction, index) => {
     const isLabel = label.test(instruction);
     const labelValue = isLabel ? getL(instruction) : undefined;
-    if (labelValue && !symbolTable[labelValue]) {
+    if (labelValue && !isFiniteNumber(symbolTable[labelValue])) {
       newLabels.push(labelValue);
       // Label instructions are omitted from result set, so create a -ve offset equal to number of previously added labels
       const nextInstructionOffset = newLabels.length;
@@ -70,12 +72,6 @@ export function injectLabels(
     } else {
       result.push(instruction);
     }
-  });
-
-  newLabels.forEach((label) => {
-    result = result.map((instruction) =>
-      instruction.replace(label, `${symbolTable[label]}`)
-    );
   });
 
   return result;
@@ -95,27 +91,29 @@ export function injectVariables(
   symbolTable: Record<string, number>,
 ) {
   let result: string[] = [];
-  let newVariables: string[] = [];
 
   instructions.forEach((instruction) => {
     const isAInstruction = aInstruction.test(instruction);
     if (isAInstruction) {
       const aInstruction = getA(instruction);
       const isSymbol = symbol.test(aInstruction);
-      if (isSymbol && !symbolTable[aInstruction]) {
+      if (isSymbol && !isFiniteNumber(symbolTable[aInstruction])) {
         addSymbolTableEntry(aInstruction, "variable");
-        newVariables.push(aInstruction);
       }
     }
-
     result.push(instruction);
   });
 
-  newVariables.forEach((variable) => {
-    result = result.map((instruction) =>
-      instruction.replace(variable, `${symbolTable[variable]}`)
-    );
+  const variables = Object.keys(symbolTable);
+
+  variables.forEach((variable) => {
+    result = result.map(instruction => {
+      return injectVariable(variable, instruction, symbolTable)});
   });
 
   return result;
+}
+
+export function injectVariable(variable: string, instruction: string, symbolTable: typeof SymbolTable): string {
+  return instruction.replace(rExp`@${escapeRegex(variable)}$`, `@${symbolTable[variable]}`);
 }

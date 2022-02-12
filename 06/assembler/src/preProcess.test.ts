@@ -26,7 +26,7 @@ Deno.test("Preprocess strips comments, whitespace and injects symbols", () => {
   ];
 
   const result = preProcess(instructions, SymbolTable);
-  assertEquals(result, ["@2", "@D=A", "@3", "D=D+A", "@0", "M=D"]);
+  assertEquals(result, ["@2", "D=A", "@3", "D=D+A", "@0", "M=D"]);
 });
 
 Deno.test("injectSymbols replaces variables and labels with ROM and RAM addresses", () => {
@@ -46,7 +46,7 @@ Deno.test("injectSymbols replaces variables and labels with ROM and RAM addresse
   assertEquals(result, expectedResult);
 });
 
-Deno.test("injectLabels replaces labels with ROM addresses", () => {
+Deno.test("injectSymbols replaces labels and variables with addresses", () => {
   const instructions = [
     "(LOOP)",
     "2",
@@ -58,9 +58,9 @@ Deno.test("injectLabels replaces labels with ROM addresses", () => {
     "@0",
     "M=D",
   ];
-  const expectedResult = ["2", "@D=A", "@Varname", "@3", "D=D+A", "@0", "M=D"];
+  const expectedResult = ["2", "@D=A", "@16", "@3", "D=D+A", "@0", "M=D"];
 
-  const result = injectLabels(instructions, SymbolTable);
+  const result = injectSymbols(instructions, SymbolTable);
   assertEquals(result, expectedResult);
   assertEquals(SymbolTable["LOOP"], 0);
   assertEquals(SymbolTable["WHILE"], 3);

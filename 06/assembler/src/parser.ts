@@ -7,8 +7,7 @@ import {
 type CommandType =
   /** A instruction (set M) */
   | "A"
-  | /** Comp instruction */ "C"
-  | /** L instruction (Assign symbol) */ "L";
+  | /** Comp instruction */ "C";
 
 const JUMP_MNEMONICS = [
   "null",
@@ -22,7 +21,6 @@ const JUMP_MNEMONICS = [
 ] as const;
 
 type JumpMnemonic = typeof JUMP_MNEMONICS[number];
-type JumpValues = [number | string, JumpMnemonic];
 
 const DEST_VALUES = [
   "null",
@@ -43,24 +41,20 @@ export type CValues = {
   jump?: string;
 };
 
-type ParseResult =
-  | { commandType: "A" | "L"; symbol: string }
-  | (
-    & {
-      commandType: "C";
-    }
-    & CValues
-  );
+type CResult =
+  & {
+    commandType: "C";
+  }
+  & CValues;
+
+type ParseResult = { commandType: "A"; symbol: string } | CResult;
 
 export function parse(instruction: string): ParseResult {
   try {
     const commandType = getCommandType(instruction);
-
     switch (commandType) {
       case "A":
         return { commandType, symbol: getA(instruction) };
-      case "L":
-        return { commandType, symbol: getL(instruction) };
       case "C":
         return {
           commandType,
@@ -73,13 +67,10 @@ export function parse(instruction: string): ParseResult {
 }
 
 function getCommandType(command: string): CommandType {
-  switch (true) {
-    case (aInstruction.test(command)):
-      return "A";
-    case (label.test(command)):
-      return "L";
-    case (cInstruction.test(command)):
-      return "C";
+  if (aInstruction.test(command)) {
+    return "A";
+  } else if (cInstruction.test(command)) {
+    return "C";
   }
 
   throw new Error(`Invalid command ${command}`);
@@ -87,13 +78,11 @@ function getCommandType(command: string): CommandType {
 
 function getC(instruction: string): CValues {
   const compValues = instruction.match(cInstruction);
-
   if (!compValues?.groups) {
     throw new Error(`Invalid C instruction:
    ${instruction}
    `);
   }
-
   const { comp, dest, jump } = compValues.groups;
 
   if (jump && !JUMP_MNEMONICS.includes(jump as JumpMnemonic)) {

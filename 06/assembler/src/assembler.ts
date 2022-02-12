@@ -30,12 +30,6 @@ async function assemble() {
           const binary = `0${floatToBinary(address).padStart(15, "0")}`;
           return binary;
         }
-        case "L": {
-          //TODO: Convert to instruction address.
-          const address = parseInt(parseResult.symbol);
-          const binary = `0${floatToBinary(address).padStart(15, "0")}`;
-          return binary;
-        }
       }
     });
 

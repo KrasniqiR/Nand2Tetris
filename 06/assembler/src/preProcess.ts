@@ -53,26 +53,27 @@ export function injectSymbols(
  *    b. Add label to table (i + 1)
  *    c. Pop instruction from array.
  *
- * @param instructions Array of assembly instructions. Ideally trimmed cleared of comments
+ * @param instructions
  * @param symbolTable
  */
 export function injectLabels(
   instructions: string[],
   symbolTable: Record<string, number>,
 ) {
-  let result: string[] = [];
-  let newLabels: string[] = [];
+  const result: string[] = [];
+  const newLabels: string[] = [];
 
   instructions.forEach((instruction, index) => {
     const isLabel = label.test(instruction);
     const labelValue = isLabel ? getL(instruction) : undefined;
-    if (labelValue && !isFiniteNumber(symbolTable[labelValue])) {
+    const isNewLabel = labelValue && !isFiniteNumber(symbolTable[labelValue]);
+    if (isNewLabel) {
       newLabels.push(labelValue);
       // Label instructions are omitted from result set, so create a -ve offset equal to number of previously added labels
       const nextInstructionOffset = newLabels.length;
       const nextInstructionIndex = index + 1 - nextInstructionOffset;
       addSymbolTableEntry(labelValue, "instruction", nextInstructionIndex);
-      // If label declared, omit this line from the result.
+      // Label instructions are stripped from binary, omit from returned result set;
       return;
     } else {
       result.push(instruction);
@@ -101,16 +102,18 @@ export function injectVariables(
     const isAInstruction = aInstruction.test(instruction);
     if (isAInstruction) {
       const aInstruction = getA(instruction);
-      const isSymbol = symbol.test(aInstruction);
-      if (isSymbol && !isFiniteNumber(symbolTable[aInstruction])) {
+      const isVariable = symbol.test(aInstruction);
+      const isNewVariable = isVariable && !isFiniteNumber(symbolTable[aInstruction]); 
+
+      if (isNewVariable) {
         addSymbolTableEntry(aInstruction, "variable");
       }
     }
+
     result.push(instruction);
   });
 
   const variables = Object.keys(symbolTable);
-
   variables.forEach((variable) => {
     result = result.map((instruction) => {
       return injectVariable(variable, instruction, symbolTable);

@@ -47,7 +47,7 @@ const compInstructions = [
   "M-D",
   "D&M",
   "D|M",
-];
+] as const;
 
 type JumpInstruction = typeof jumpInstructions[number];
 type DestInstruction = typeof destInstructions[number];
@@ -75,7 +75,7 @@ const jumpInstructionMap: Record<JumpInstruction, string> = {
   JMP: "111",
 };
 
-const compInstructionMap = {
+const compInstructionMap: Record<CompInstruction, string> = {
   "0": "0101010",
   "1": "0111111",
   "-1": "0111010",

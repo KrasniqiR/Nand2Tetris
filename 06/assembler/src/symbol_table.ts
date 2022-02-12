@@ -29,12 +29,12 @@ export const SymbolTable: Record<string, number> = {
 
 export function addSymbolTableEntry(
   symbol: string,
-  type: "instruction" | "variable",
+  type: "instructionAddress" | "variable",
   value?: number,
 ) {
   if (SymbolTable[symbol]) throw new Error(`${symbol} already exists.`);
 
-  if (type === "instruction") {
+  if (type === "instructionAddress") {
     SymbolTable[symbol] = value ?? 0;
     latestROMAddress = SymbolTable[symbol];
   } else if (type === "variable") {

@@ -72,7 +72,7 @@ export function injectLabels(
       // Label instructions are omitted from result set, so create a -ve offset equal to number of previously added labels
       const nextInstructionOffset = newLabels.length;
       const nextInstructionIndex = index + 1 - nextInstructionOffset;
-      addSymbolTableEntry(labelValue, "instruction", nextInstructionIndex);
+      addSymbolTableEntry(labelValue, "instructionAddress", nextInstructionIndex);
       // Label instructions are stripped from binary, omit from returned result set;
       return;
     } else {

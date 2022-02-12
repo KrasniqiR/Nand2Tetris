@@ -1,6 +1,8 @@
 import { assertEquals, assertExists, assertObjectMatch } from "../deps.ts";
 import { CValues } from "./parser.ts";
 import { aInstruction, cInstructionComposed, label } from "./patterns.ts";
+import { injectVariable } from "./preProcess.ts";
+import { rExp } from "./regEx.ts";
 
 Deno.test("RexExp parses a C instructions into comp, dest and jump values and returns undefined if instruction is invalid.", () => {
   const validInstructions: Array<[string, CValues]> = [
@@ -59,4 +61,18 @@ Deno.test("L instruction pattern correctly detects and parses L instructions", (
     assertExists(result?.groups);
     assertEquals(result?.groups.label, expectedResult);
   });
+});
+
+
+Deno.test('Variable replacement correctly replaces variables for addresses', () => {
+  const variable = "ball.setdestination$if_true0";
+  const symbolTable = {
+    "ball.setdestination$if_true0": 250
+  }
+  const instructions: Array<[string, string]> = [
+    [`@${variable}`, "@250"], 
+  ]
+
+  
+  assertEquals(injectVariable(variable, instructions[0][0], symbolTable), '@250');
 });

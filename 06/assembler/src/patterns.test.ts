@@ -2,7 +2,6 @@ import { assertEquals, assertExists, assertObjectMatch } from "../deps.ts";
 import { CValues } from "./parser.ts";
 import { aInstruction, cInstructionComposed, label } from "./patterns.ts";
 import { injectVariable } from "./preProcess.ts";
-import { rExp } from "./regEx.ts";
 
 Deno.test("RexExp parses a C instructions into comp, dest and jump values and returns undefined if instruction is invalid.", () => {
   const validInstructions: Array<[string, CValues]> = [

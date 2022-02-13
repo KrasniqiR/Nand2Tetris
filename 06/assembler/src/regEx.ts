@@ -1,23 +1,22 @@
-export const source = (expr: RegExp | string): string =>
+export const src = (expr: RegExp | string): string =>
   expr instanceof RegExp ? expr.source : expr;
 
-export const or = (...args: RegExp[]) =>
-  [...args].map((r) => source(r)).join("|");
+export const or = (...args: RegExp[]) => [...args].map((r) => src(r)).join("|");
 
-export const name = (expr: RegExp | string, key: string) =>
-  `(?<${key}>${source(expr)})`;
+export const named = (expr: RegExp | string, key: string) =>
+  rExp`(?<${key}>${expr})`;
 
 export function rExp(
   strings: TemplateStringsArray,
   ...args: Array<RegExp | string>
 ): RegExp {
-  const sources = [...args].map((s) => source(s));
+  const srcs = [...args].map((s) => src(s));
   const longestLength = Math.max(strings.length, args.length);
 
   const merged = [];
   for (let i = 0; i < longestLength; i++) {
     if (strings[i]) merged.push(strings[i]);
-    if (sources[i]) merged.push(sources[i]);
+    if (srcs[i]) merged.push(srcs[i]);
   }
 
   return new RegExp(merged.join(""));

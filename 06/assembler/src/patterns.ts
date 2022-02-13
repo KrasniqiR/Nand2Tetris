@@ -1,10 +1,11 @@
 import { named, rgx } from "./regEx.ts";
-
 /**
  * Match a symbol pattern e.g $varName. Must not start with a digit.
  * : _ $ . also allowed
  */
-export const symbol = /([A-z\$\.:_][A-z\$\.\d:_]+)/;
+const symbolStartSet = /A-z\$\.:_/;
+const symbolRestSet = rgx`${symbolStartSet}\d`;
+export const symbol = rgx`([${symbolStartSet}][${symbolRestSet}]+)`;
 export const constant = /\d+/;
 
 /**

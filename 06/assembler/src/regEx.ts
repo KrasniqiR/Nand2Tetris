@@ -4,9 +4,9 @@ export const src = (expr: RegExp | string): string =>
 export const or = (...args: RegExp[]) => [...args].map((r) => src(r)).join("|");
 
 export const named = (expr: RegExp | string, key: string) =>
-  rExp`(?<${key}>${expr})`;
+  rgx`(?<${key}>${expr})`;
 
-export function rExp(
+export function rgx(
   strings: TemplateStringsArray,
   ...args: Array<RegExp | string>
 ): RegExp {

@@ -1,7 +1,7 @@
 import { assertEquals } from "../deps.ts";
-import { rExp } from "./regEx.ts";
+import { rgx } from "./regEx.ts";
 
 Deno.test("rExp plucks source and merges interpolated strings", () => {
-  const a = rExp`^${"abc"}`;
+  const a = rgx`^${"abc"}`;
   assertEquals(a.source, "^abc");
 });

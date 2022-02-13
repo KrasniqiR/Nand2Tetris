@@ -1,6 +1,6 @@
 import { getA, getL } from "./parser.ts";
 import { aInstruction, escapeRegex, label, symbol } from "./patterns.ts";
-import { rExp } from "./regEx.ts";
+import { rgx } from "./regEx.ts";
 import { addSymbolTableEntry, SymbolTable } from "./symbol_table.ts";
 import { isFiniteNumber } from "./util.ts";
 
@@ -134,7 +134,7 @@ export function injectVariable(
   symbolTable: typeof SymbolTable,
 ): string {
   return instruction.replace(
-    rExp`@${escapeRegex(variable)}$`,
+    rgx`@${escapeRegex(variable)}$`,
     `@${symbolTable[variable]}`,
   );
 }

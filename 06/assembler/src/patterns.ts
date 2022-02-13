@@ -1,38 +1,31 @@
-import { named, rExp } from "./regEx.ts";
+import { named, rgx } from "./regEx.ts";
 
 /**
  * Match a symbol pattern e.g $varName. Must not start with a digit.
  * : _ $ . also allowed
  */
 export const symbol = /([A-z\$\.:_][A-z\$\.\d:_]+)/;
-
 export const constant = /\d+/;
 
 /**
  * Match an A instruction
  */
-export const aInstruction = rExp`^@${
-  named(rExp`${symbol}|${constant}`, "instruction")
+export const aInstruction = rgx`^@${
+  named(rgx`${symbol}|${constant}`, "instruction")
 }$`;
 /**
  * Match a label instruction e.g (LOOP)
  * Uppercase word
  */
-export const label = rExp`^\\(${
-  named(rExp`${symbol}|${constant}`, "label")
+export const label = rgx`^\\(${
+  named(rgx`${symbol}|${constant}`, "label")
 }\\)$`;
-/**
- * Match a JUMP instruction
- * Binding ; JUMP condition
- */
-export const jmp = /(\d+|[A-Z]+);([A-Z]+)/;
 
-export const dest = /(?<dest>(A|M|D|null){0,3})/;
-export const comp =
-  /(?<comp>((0|1|-1)|(\!|-)?(A|M|D))|(A|M|D)(-|\+|\&|\|)(A|M|D|1))/;
-export const jump = /(?<jump>null|J([A-Z]{2}))/;
+export const dest = named(/(A|M|D|null){0,3}/, 'dest');
+export const comp = named(/((0|1|-1)|(\!|-)?(A|M|D))|(A|M|D)(-|\+|\&|\|)(A|M|D|1)/, 'comp');
+export const jump = named(/null|J([A-Z]{2})/, 'jump');
 
-export const cInstructionComposed = rExp
+export const cInstructionComposed = rgx
   `^(${dest}?=)?${comp}?(;(?<=;)${jump})?$`;
 
 export const escapeRegex = (s: string) => s.replace(/(?=\W)/g, "\\");
